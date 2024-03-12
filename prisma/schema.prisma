@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  DELIVERYMAN
+}
+
+enum OrderStatus {
+  WAITING
+  RETIRED
+  DELIVERED
+  RETURNED
+}
+
+model User {
+  id                     String    @unique @default(uuid())
+  name                   String
+  email                  String    @unique
+  password               String
+  individualRegistration String    @unique @map("individual_registration")
+  cellphone              String    @unique
+  role                   UserRole  @default(DELIVERYMAN)
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime? @updatedAt @map("updated_at")
+
+  orders Order[]
+
+  @@map("users")
+}
+
+model Order {
+  id            String      @unique @default(uuid())
+  deliveryManId String      @map("delivery_man_id")
+  recipientId   String      @map("recipient_id")
+  coordinates   Json
+  status        OrderStatus @default(WAITING)
+  attachment    String?
+  createdAt     DateTime    @default(now()) @map("created_at")
+  postedAt      DateTime?   @map("posted_at")
+  retiredAt     DateTime?   @map("retired_at")
+  deliveredAt   DateTime?   @map("delivered_at")
+  returnedAt    DateTime?   @map("returnedAt")
+  updatedAt     DateTime?   @updatedAt @map("updated_at")
+
+  recipient Recipient @relation(fields: [recipientId], references: [id])
+  user      User      @relation(fields: [deliveryManId], references: [id])
+
+  @@map("orders")
+}
+
+model Recipient {
+  id                     String    @unique @default(uuid())
+  name                   String
+  individualRegistration String    @unique @map("individual_registration")
+  orders                 Order[]
+  cellphone              String    @unique
+  email                  String    @unique
+  postalCode             String
+  street                 String
+  streetNumber           Int       @map("street_number")
+  complement             String?
+  neighborhood           String
+  city                   String
+  state                  String
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime? @updatedAt @map("updated_at")
+
+  @@map("recipients")
+}

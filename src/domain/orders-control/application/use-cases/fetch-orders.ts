@@ -1,0 +1,35 @@
+/* eslint-disable @typescript-eslint/no-empty-interface */
+import { Injectable } from '@nestjs/common'
+
+import { Either, right } from '@/core/either'
+import { PaginationParams } from '@/core/repositories/pagination-params'
+
+import { Order } from '../../enterprise/entities/order'
+import { OrdersRepository } from '../repositories/order'
+
+type FetchOrdersUseCaseRequest = PaginationParams
+
+type FetchOrdersUseCaseResponse = Either<
+  {
+    items: Order[]
+  },
+  null
+>
+@Injectable()
+export class FetchOrdersUseCase {
+  constructor(private ordersRepository: OrdersRepository) {}
+
+  async execute({
+    page,
+    limit,
+  }: FetchOrdersUseCaseRequest): Promise<FetchOrdersUseCaseResponse> {
+    const orders = await this.ordersRepository.findMany({
+      page,
+      limit,
+    })
+
+    return right({
+      items: orders,
+    })
+  }
+}
