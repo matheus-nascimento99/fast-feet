@@ -36,7 +36,7 @@ export class PrismaRecipientsRepository implements RecipientsRepository {
 
   async findMany({ limit, page }: PaginationParams): Promise<Recipient[]> {
     const recipients = await this.prisma.recipient.findMany({
-      take: page * limit,
+      take: limit,
       skip: (page - 1) * limit,
     })
 

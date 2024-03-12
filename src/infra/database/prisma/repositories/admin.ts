@@ -25,7 +25,7 @@ export class PrismaAdminsRepository implements AdminsRepository {
       where: {
         role: 'ADMIN',
       },
-      take: page * limit,
+      take: limit,
       skip: (page - 1) * limit,
     })
 

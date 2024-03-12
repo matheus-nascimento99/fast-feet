@@ -37,7 +37,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
 
   async findMany({ limit, page }: PaginationParams): Promise<Order[]> {
     const orders = await this.prisma.order.findMany({
-      take: page * limit,
+      take: limit,
       skip: (page - 1) * limit,
     })
 
@@ -65,7 +65,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
         deliveryManId: deliveryManId.toString(),
       },
       skip: (page - 1) * limit,
-      take: page * limit,
+      take: limit,
     })
 
     return orders.map((order) => PrismaOrdersMapper.toDomain(order))

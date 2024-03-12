@@ -26,7 +26,7 @@ export class PrismaDeliveryMenRepository implements DeliveryMenRepository {
         role: 'DELIVERYMAN',
       },
       skip: (page - 1) * limit,
-      take: page * limit,
+      take: limit,
     })
 
     return deliveryMen.map((item) => PrismaDeliveryMenMapper.toDomain(item))
