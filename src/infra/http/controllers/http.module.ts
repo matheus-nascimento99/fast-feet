@@ -4,6 +4,7 @@ import { AuthenticateUseCase } from '@/domain/orders-control/application/use-cas
 import { CreateAdminUseCase } from '@/domain/orders-control/application/use-cases/create-admin'
 import { CreateDeliveryManUseCase } from '@/domain/orders-control/application/use-cases/create-delivery-man'
 import { CreateOrderUseCase } from '@/domain/orders-control/application/use-cases/create-order'
+import { CreateRecipientUseCase } from '@/domain/orders-control/application/use-cases/create-recipient'
 import { DeleteDeliveryManUseCase } from '@/domain/orders-control/application/use-cases/delete-delivery-man'
 import { DeleteOrderUseCase } from '@/domain/orders-control/application/use-cases/delete-order'
 import { EditDeliveryManUseCase } from '@/domain/orders-control/application/use-cases/edit-delivery-man'
@@ -16,6 +17,7 @@ import { HashModule } from '@/infra/hash/hash.module'
 
 import { AuthenticateController } from './authenticate.controller'
 import { CreateOrderController } from './create-order.controller'
+import { CreateRecipientController } from './create-recipient.controller'
 import { CreateUserController } from './create-user.controller'
 import { DeleteDeliveryManController } from './delete-delivery-man.controller'
 import { DeleteOrderController } from './delete-order.controller'
@@ -36,6 +38,7 @@ import { FetchOrdersController } from './fetch-orders.controller'
     EditOrderController,
     DeleteOrderController,
     FetchOrdersController,
+    CreateRecipientController,
   ],
   providers: [
     AuthenticateUseCase,
@@ -48,6 +51,7 @@ import { FetchOrdersController } from './fetch-orders.controller'
     EditOrderUseCase,
     DeleteOrderUseCase,
     FetchOrdersUseCase,
+    CreateRecipientUseCase,
   ],
   exports: [
     AuthenticateUseCase,
@@ -60,6 +64,7 @@ import { FetchOrdersController } from './fetch-orders.controller'
     EditOrderUseCase,
     DeleteOrderUseCase,
     FetchOrdersUseCase,
+    CreateRecipientUseCase,
   ],
 })
 export class HttpModule {}

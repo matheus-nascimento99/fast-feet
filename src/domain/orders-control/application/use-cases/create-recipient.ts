@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common'
+
 import { Either, right } from '@/core/either'
 import { Mask } from '@/domain/orders-control/enterprise/entities/value-objects/mask'
 
@@ -24,7 +26,7 @@ type CreateRecipientUseCaseResponse = Either<
   },
   null
 >
-
+@Injectable()
 export class CreateRecipientUseCase {
   constructor(private recipientsRepository: RecipientsRepository) {}
 
