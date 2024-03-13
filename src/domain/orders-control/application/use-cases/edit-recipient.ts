@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
+import { Injectable } from '@nestjs/common'
+
 import { Either, left, right } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
@@ -21,7 +23,7 @@ interface EditRecipientUseCaseRequest {
 }
 
 type EditRecipientUseCaseResponse = Either<unknown, ResourceNotFoundError>
-
+@Injectable()
 export class EditRecipientUseCase {
   constructor(private recipientsRepository: RecipientsRepository) {}
 
