@@ -13,6 +13,7 @@ import { EditOrderUseCase } from '@/domain/orders-control/application/use-cases/
 import { EditRecipientUseCase } from '@/domain/orders-control/application/use-cases/edit-recipient'
 import { FetchDeliveryMenUseCase } from '@/domain/orders-control/application/use-cases/fetch-delivery-men'
 import { FetchOrdersUseCase } from '@/domain/orders-control/application/use-cases/fetch-orders'
+import { FetchRecipientsUseCase } from '@/domain/orders-control/application/use-cases/fetch-recipients'
 import { CryptographyModule } from '@/infra/cryptography/cryptography.module'
 import { DatabaseModule } from '@/infra/database/database.module'
 import { HashModule } from '@/infra/hash/hash.module'
@@ -29,6 +30,7 @@ import { EditOrderController } from './edit-order.controller'
 import { EditRecipientController } from './edit-recipient.controller'
 import { FetchDeliveryMenController } from './fetch-delivery-men.controller'
 import { FetchOrdersController } from './fetch-orders.controller'
+import { FetchRecipientsController } from './fetch-recipients.controller'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, HashModule],
@@ -45,6 +47,7 @@ import { FetchOrdersController } from './fetch-orders.controller'
     CreateRecipientController,
     EditRecipientController,
     DeleteRecipientController,
+    FetchRecipientsController,
   ],
   providers: [
     AuthenticateUseCase,
@@ -60,6 +63,7 @@ import { FetchOrdersController } from './fetch-orders.controller'
     CreateRecipientUseCase,
     EditRecipientUseCase,
     DeleteRecipientUseCase,
+    FetchRecipientsUseCase,
   ],
   exports: [
     AuthenticateUseCase,
@@ -75,6 +79,7 @@ import { FetchOrdersController } from './fetch-orders.controller'
     CreateRecipientUseCase,
     EditRecipientUseCase,
     DeleteRecipientUseCase,
+    FetchRecipientsUseCase,
   ],
 })
 export class HttpModule {}

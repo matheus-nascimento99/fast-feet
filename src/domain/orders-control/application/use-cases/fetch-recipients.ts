@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
+import { Injectable } from '@nestjs/common'
+
 import { Either, right } from '@/core/either'
 import { PaginationParams } from '@/core/repositories/pagination-params'
 
@@ -13,7 +15,7 @@ type FetchRecipientsUseCaseResponse = Either<
   },
   null
 >
-
+@Injectable()
 export class FetchRecipientsUseCase {
   constructor(private recipientsRepository: RecipientsRepository) {}
 
