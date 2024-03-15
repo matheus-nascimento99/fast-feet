@@ -1,6 +1,6 @@
 import { makeOrder } from 'test/factories/make-order'
 import { InMemoryOrdersRepository } from 'test/repositories/in-memory-order'
-import { FakeUploader } from 'test/storage/uploader/fake-uploader'
+import { FakeStorage } from 'test/storage/fake-storage'
 
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
@@ -9,14 +9,14 @@ import { InvalidAttachmentType } from './errors/invalid-attachment-type'
 import { SaveOrderAttachmentUseCase } from './save-order-attachment'
 
 let inMemoryOrdersRepository: InMemoryOrdersRepository
-let fakeUploader: FakeUploader
+let fakeStorage: FakeStorage
 let sut: SaveOrderAttachmentUseCase
 
 describe('Save order attachment use case', () => {
   beforeEach(() => {
     inMemoryOrdersRepository = new InMemoryOrdersRepository()
-    fakeUploader = new FakeUploader()
-    sut = new SaveOrderAttachmentUseCase(inMemoryOrdersRepository, fakeUploader)
+    fakeStorage = new FakeStorage()
+    sut = new SaveOrderAttachmentUseCase(inMemoryOrdersRepository, fakeStorage)
   })
 
   it('should be able to save an order attachment', async () => {
@@ -26,7 +26,7 @@ describe('Save order attachment use case', () => {
     const result = await sut.execute({
       orderId: order.id.toString(),
       filename: 'example-filename.jpg',
-      mimeType: 'image/jpg',
+      fileType: 'image/jpg',
       size: 400,
       body: Buffer.from(''),
     })
@@ -44,7 +44,7 @@ describe('Save order attachment use case', () => {
     const result = await sut.execute({
       orderId: inexistentOrderId,
       filename: 'example-filename.jpg',
-      mimeType: 'image/jpg',
+      fileType: 'image/jpg',
       size: 400,
       body: Buffer.from(''),
     })
@@ -60,7 +60,7 @@ describe('Save order attachment use case', () => {
     const result = await sut.execute({
       orderId: order.id.toString(),
       filename: 'example-filename.gif',
-      mimeType: 'image/gif',
+      fileType: 'image/gif',
       size: 400,
       body: Buffer.from(''),
     })
@@ -76,7 +76,7 @@ describe('Save order attachment use case', () => {
     const result = await sut.execute({
       orderId: order.id.toString(),
       filename: 'example-filename.jpg',
-      mimeType: 'image/jpg',
+      fileType: 'image/jpg',
       size: 5242881,
       body: Buffer.from(''),
     })

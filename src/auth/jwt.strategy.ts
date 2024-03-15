@@ -8,9 +8,10 @@ import { Env } from '@/infra/env/env'
 
 const userPayloadSchema = z.object({
   sub: z.string().uuid(),
+  role: z.enum(['ADMIN', 'DELIVERYMAN']),
 })
 
-type UserPayload = z.infer<typeof userPayloadSchema>
+export type UserPayload = z.infer<typeof userPayloadSchema>
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {

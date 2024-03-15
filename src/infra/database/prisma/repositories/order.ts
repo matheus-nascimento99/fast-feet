@@ -50,7 +50,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
     deliveryManId: UniqueEntityId,
   ): Promise<Order[]> {
     const orders = await this.prisma.$queryRaw<PrismaOrder[]>`
-      SELECT * from orders WHERE ( 6371 * acos( cos( radians(${lat}) ) * cos( radians( coordinates->'lat' ) ) * cos( radians( coordinates->'lng' ) - radians(${lng}) ) + sin( radians(${lat}) ) * sin( radians( coordinates->'lat' ) ) ) ) <= 10 AND delivery_man_id = ${deliveryManId.toString()} LIMIT(${(page - 1) * limit}, ${page * limit})
+      SELECT * from orders WHERE ( 6371 * acos( cos( radians(${lat}) ) * cos( radians( (coordinates->'lat')::double precision ) ) * cos( radians( (coordinates->'lng')::double precision ) - radians(${lng}) ) + sin( radians(${lat}) ) * sin( radians( (coordinates->'lat')::double precision ) ) ) ) <= 3 AND delivery_man_id = ${deliveryManId.toString()} LIMIT ${limit} OFFSET ${(page - 1) * limit}
     `
 
     return orders.map((order) => PrismaOrdersMapper.toDomain(order))

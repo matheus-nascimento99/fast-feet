@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
+import { Injectable } from '@nestjs/common'
+
 import { Either, left, right } from '@/core/either'
 import { NotAuthorizedError } from '@/core/errors/not-authorized-error'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
@@ -20,9 +22,9 @@ type FetchOrdersByDeliveryManUseCaseResponse = Either<
   {
     items: Order[]
   },
-  ResourceNotFoundError
+  ResourceNotFoundError | NotAuthorizedError
 >
-
+@Injectable()
 export class FetchOrdersByDeliveryManUseCase {
   constructor(
     private adminsRepository: AdminsRepository,
@@ -37,7 +39,11 @@ export class FetchOrdersByDeliveryManUseCase {
     limit,
   }: FetchOrdersByDeliveryManUseCaseRequest): Promise<FetchOrdersByDeliveryManUseCaseResponse> {
     let user: AuthResponse | null = null
-    const repositories = Object.keys(this)
+    const { ordersRepository, ...rest } = this //eslint-disable-line
+
+    const repositories = Object.keys({
+      ...rest,
+    })
 
     for (const repository of repositories) {
       user = await this[repository as AuthRepositories].findById(userId)
