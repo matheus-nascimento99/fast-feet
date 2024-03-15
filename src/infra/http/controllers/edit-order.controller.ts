@@ -12,6 +12,8 @@ import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { EditOrderUseCase } from '@/domain/orders-control/application/use-cases/edit-order'
 
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
+import { Role } from '../roles/role.enum'
+import { Roles } from '../roles/roles.decorator'
 
 const editOrderSchema = z.object({
   deliveryManId: z.string().uuid(),
@@ -29,6 +31,7 @@ export class EditOrderController {
   constructor(private editOrderUseCase: EditOrderUseCase) {}
 
   @Put()
+  @Roles(Role.ADMIN)
   @HttpCode(204)
   async handle(
     @Body(new ZodValidationPipe(editOrderSchema)) body: EditOrderSchema,

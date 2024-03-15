@@ -20,6 +20,9 @@ import { UserWithSameEmailError } from '@/domain/orders-control/application/use-
 import { UserWithSameIndividualRegistrationError } from '@/domain/orders-control/application/use-cases/errors/user-with-same-individual-registration'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 
+import { Role } from '../roles/role.enum'
+import { Roles } from '../roles/roles.decorator'
+
 const createUserSchema = z.object({
   name: z.string().min(1),
   email: z.string().email().min(1),
@@ -39,6 +42,7 @@ export class CreateUserController {
   ) {}
 
   @Post()
+  @Roles(Role.ADMIN)
   async handle(
     @Body(new ZodValidationPipe(createUserSchema)) body: CreateUserSchema,
   ) {

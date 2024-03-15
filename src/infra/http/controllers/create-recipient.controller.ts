@@ -4,6 +4,8 @@ import z from 'zod'
 import { CreateRecipientUseCase } from '@/domain/orders-control/application/use-cases/create-recipient'
 
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
+import { Role } from '../roles/role.enum'
+import { Roles } from '../roles/roles.decorator'
 
 const createRecipientSchema = z.object({
   name: z.string().min(1),
@@ -25,6 +27,7 @@ type CreateRecipientSchema = z.infer<typeof createRecipientSchema>
 export class CreateRecipientController {
   constructor(private createRecipientUseCase: CreateRecipientUseCase) {}
   @Post()
+  @Roles(Role.ADMIN)
   async handle(
     @Body(new ZodValidationPipe(createRecipientSchema))
     body: CreateRecipientSchema,

@@ -3,8 +3,10 @@ import { APP_GUARD } from '@nestjs/core'
 import { JwtModule } from '@nestjs/jwt'
 import { PassportModule } from '@nestjs/passport'
 
+import { DatabaseModule } from '@/infra/database/database.module'
 import { EnvModule } from '@/infra/env/env.module'
 import { EnvService } from '@/infra/env/env.service'
+import { RolesGuard } from '@/infra/http/roles/roles.guard'
 
 import { JwtStrategy } from './jwt.strategy'
 import { JwtAuthGuard } from './jwt-auth.guard'
@@ -28,8 +30,16 @@ import { JwtAuthGuard } from './jwt-auth.guard'
       },
     }),
     EnvModule,
+    DatabaseModule,
   ],
-  providers: [JwtStrategy, { provide: APP_GUARD, useClass: JwtAuthGuard }],
+  providers: [
+    JwtStrategy,
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
   controllers: [],
   exports: [],
 })

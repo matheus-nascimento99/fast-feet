@@ -5,6 +5,8 @@ import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { CreateOrderUseCase } from '@/domain/orders-control/application/use-cases/create-order'
 
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
+import { Role } from '../roles/role.enum'
+import { Roles } from '../roles/roles.decorator'
 
 const createOrderSchema = z.object({
   deliveryManId: z.string().uuid(),
@@ -22,6 +24,7 @@ export class CreateOrderController {
   constructor(private createOrderUseCase: CreateOrderUseCase) {}
 
   @Post()
+  @Roles(Role.ADMIN)
   async handle(
     @Body(new ZodValidationPipe(createOrderSchema)) body: CreateOrderSchema,
   ) {

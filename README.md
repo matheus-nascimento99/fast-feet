@@ -12,14 +12,14 @@
 [x] Deve ser possível listar as encomendas com endereços de entrega próximo ao local do entregador(3km)
 [x] Deve ser possível alterar a senha de um usuário
 [x] Deve ser possível listar as entregas de um usuário
-[x] Deve ser possível notificar o destinatário a cada alteração no status da encomenda
+[] Deve ser possível notificar o destinatário a cada alteração no status da encomenda
 
 ### RN - Regras de negócio
 
-[] Somente usuário do tipo admin pode realizar operações de CRUD nas encomendas
-[] Somente usuário do tipo admin pode realizar operações de CRUD dos entregadores
-[] Somente usuário do tipo admin pode realizar operações de CRUD dos destinatários
-[] Somente o admin pode alterar a senha de um usuário
+[x] Somente usuário do tipo admin pode realizar operações de CRUD nas encomendas
+[x] Somente usuário do tipo admin pode realizar operações de CRUD dos entregadores
+[x] Somente usuário do tipo admin pode realizar operações de CRUD dos destinatários
+[x] Somente o admin pode alterar a senha de um usuário
 [x] Para marcar uma encomenda como entregue é obrigatório o envio de uma foto
 [x] Somente o entregador que retirou a encomenda pode marcar ela como entregue
 [x] Não deve ser possível um entregador listar as encomendas de outro entregador

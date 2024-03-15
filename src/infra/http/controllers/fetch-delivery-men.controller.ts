@@ -5,6 +5,8 @@ import { FetchDeliveryMenUseCase } from '@/domain/orders-control/application/use
 
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 import { DeliveryManPresenter } from '../presenters/delivery-man-presenter'
+import { Role } from '../roles/role.enum'
+import { Roles } from '../roles/roles.decorator'
 
 const fetchDeliveryMenSchema = z.object({
   page: z.coerce.number().optional().default(1),
@@ -16,6 +18,7 @@ type FetchDeliveryMenSchema = z.infer<typeof fetchDeliveryMenSchema>
 export class FetchDeliveryMenController {
   constructor(private fetchDeliveryMenUseCase: FetchDeliveryMenUseCase) {}
   @Get()
+  @Roles(Role.ADMIN)
   async handle(
     @Query(new ZodValidationPipe(fetchDeliveryMenSchema))
     query: FetchDeliveryMenSchema,

@@ -5,6 +5,8 @@ import { FetchRecipientsUseCase } from '@/domain/orders-control/application/use-
 
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
 import { RecipientPresenter } from '../presenters/recipient-presenter'
+import { Role } from '../roles/role.enum'
+import { Roles } from '../roles/roles.decorator'
 
 const fetchRecipientsQuerySchema = z.object({
   page: z.coerce.number().optional().default(1),
@@ -18,6 +20,7 @@ export class FetchRecipientsController {
   constructor(private fetchRecipientsUseCase: FetchRecipientsUseCase) {}
 
   @Get()
+  @Roles(Role.ADMIN)
   async handle(
     @Query(new ZodValidationPipe(fetchRecipientsQuerySchema))
     query: FetchRecipientsQuerySchema,

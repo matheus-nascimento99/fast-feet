@@ -12,6 +12,8 @@ import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { EditRecipientUseCase } from '@/domain/orders-control/application/use-cases/edit-recipient'
 
 import { ZodValidationPipe } from '../pipes/zod-validation-pipe'
+import { Role } from '../roles/role.enum'
+import { Roles } from '../roles/roles.decorator'
 
 const editRecipientSchema = z.object({
   name: z.string().min(1),
@@ -34,6 +36,7 @@ export class EditRecipientController {
   constructor(private editRecipientUseCase: EditRecipientUseCase) {}
 
   @Put()
+  @Roles(Role.ADMIN)
   @HttpCode(204)
   async handle(
     @Param('recipient_id') recipientId: string,

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 
 import { AuthenticateUseCase } from '@/domain/orders-control/application/use-cases/authenticate'
 import { ChangeOrderStatusUseCase } from '@/domain/orders-control/application/use-cases/change-order-status'
+import { ChangePasswordUseCase } from '@/domain/orders-control/application/use-cases/change-password'
 import { CreateAdminUseCase } from '@/domain/orders-control/application/use-cases/create-admin'
 import { CreateDeliveryManUseCase } from '@/domain/orders-control/application/use-cases/create-delivery-man'
 import { CreateOrderUseCase } from '@/domain/orders-control/application/use-cases/create-order'
@@ -25,6 +26,7 @@ import { StorageModule } from '@/infra/storage/storage.module'
 
 import { AuthenticateController } from './authenticate.controller'
 import { ChangeOrderStatusController } from './change-order-status.controller'
+import { ChangePasswordController } from './change-password.controller'
 import { CreateOrderController } from './create-order.controller'
 import { CreateRecipientController } from './create-recipient.controller'
 import { CreateUserController } from './create-user.controller'
@@ -61,6 +63,7 @@ import { SaveOrderAttachmentController } from './save-order-attachment.controlle
     SaveOrderAttachmentController,
     FetchOrdersNearByDeliveryManController,
     FetchOrdersByDeliveryManController,
+    ChangePasswordController,
   ],
   providers: [
     AuthenticateUseCase,
@@ -81,6 +84,7 @@ import { SaveOrderAttachmentController } from './save-order-attachment.controlle
     SaveOrderAttachmentUseCase,
     FetchOrdersNearByDeliveryManUseCase,
     FetchOrdersByDeliveryManUseCase,
+    ChangePasswordUseCase,
   ],
   exports: [
     AuthenticateUseCase,
@@ -101,6 +105,7 @@ import { SaveOrderAttachmentController } from './save-order-attachment.controlle
     SaveOrderAttachmentUseCase,
     FetchOrdersNearByDeliveryManUseCase,
     FetchOrdersByDeliveryManUseCase,
+    ChangePasswordUseCase,
   ],
 })
 export class HttpModule {}
