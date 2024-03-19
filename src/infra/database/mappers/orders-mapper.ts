@@ -1,9 +1,20 @@
-import { Order as PrismaOrder, Prisma } from '@prisma/client'
+import {
+  Order as PrismaOrder,
+  Prisma,
+  Recipient as PrismaRecipient,
+  User as PrismaDeliveryMan,
+} from '@prisma/client'
 
 import { LatLng } from '@/core/types/coordinates'
 import { UniqueEntityId } from '@/core/value-objects/unique-entity-id'
 import { Attachment } from '@/domain/orders-control/enterprise/entities/attachment'
 import { Order } from '@/domain/orders-control/enterprise/entities/order'
+import { OrderWithDetails } from '@/domain/orders-control/enterprise/entities/value-objects/order-with-details'
+
+export type PrismaOrdersWithDetailsMapperParams = PrismaOrder & {
+  deliveryMan: PrismaDeliveryMan
+  recipient: PrismaRecipient
+}
 
 export class PrismaOrdersMapper {
   static toDomain(raw: PrismaOrder): Order {
@@ -25,6 +36,33 @@ export class PrismaOrdersMapper {
       },
       new UniqueEntityId(raw.id),
     )
+  }
+
+  static toDomainWithDetails(
+    raw: PrismaOrdersWithDetailsMapperParams,
+  ): OrderWithDetails {
+    return OrderWithDetails.create({
+      orderId: new UniqueEntityId(raw.id),
+      recipient: {
+        id: new UniqueEntityId(raw.recipient.id),
+        name: raw.recipient.name,
+      },
+      deliveryMan: {
+        id: new UniqueEntityId(raw.deliveryMan.id),
+        name: raw.deliveryMan.name,
+      },
+      coordinates: raw.coordinates as unknown as LatLng,
+      status: raw.status,
+      createdAt: raw.createdAt,
+      attachment: raw.attachment
+        ? Attachment.create({ link: raw.attachment })
+        : null,
+      postedAt: raw.postedAt,
+      retiredAt: raw.retiredAt,
+      deliveredAt: raw.deliveredAt,
+      returnedAt: raw.returnedAt,
+      updatedAt: raw.updatedAt,
+    })
   }
 
   static toPrisma(order: Order): Prisma.OrderUncheckedCreateInput {

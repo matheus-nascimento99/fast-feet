@@ -55,8 +55,8 @@ model Order {
   returnedAt    DateTime?   @map("returnedAt")
   updatedAt     DateTime?   @updatedAt @map("updated_at")
 
-  recipient Recipient @relation(fields: [recipientId], references: [id])
-  user      User      @relation(fields: [deliveryManId], references: [id])
+  recipient   Recipient @relation(fields: [recipientId], references: [id])
+  deliveryMan User      @relation(fields: [deliveryManId], references: [id])
 
   @@map("orders")
 }

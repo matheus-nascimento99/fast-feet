@@ -6,6 +6,7 @@ import { LatLng } from '@/core/types/coordinates'
 import { UniqueEntityId } from '@/core/value-objects/unique-entity-id'
 import { OrdersRepository } from '@/domain/orders-control/application/repositories/order'
 import { Order } from '@/domain/orders-control/enterprise/entities/order'
+import { OrderWithDetails } from '@/domain/orders-control/enterprise/entities/value-objects/order-with-details'
 
 import { PrismaOrdersMapper } from '../../mappers/orders-mapper'
 import { PrismaService } from '../prisma.service'
@@ -69,6 +70,22 @@ export class PrismaOrdersRepository implements OrdersRepository {
     })
 
     return orders.map((order) => PrismaOrdersMapper.toDomain(order))
+  }
+
+  async findManyWithDetails({
+    page,
+    limit,
+  }: PaginationParams): Promise<OrderWithDetails[]> {
+    const orders = await this.prisma.order.findMany({
+      include: {
+        deliveryMan: true,
+        recipient: true,
+      },
+      skip: (page - 1) * limit,
+      take: limit,
+    })
+
+    return orders.map((order) => PrismaOrdersMapper.toDomainWithDetails(order))
   }
 
   async save(orderId: UniqueEntityId, order: Order): Promise<void> {

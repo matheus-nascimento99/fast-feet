@@ -4,14 +4,14 @@ import { Injectable } from '@nestjs/common'
 import { Either, right } from '@/core/either'
 import { PaginationParams } from '@/core/repositories/pagination-params'
 
-import { Order } from '../../enterprise/entities/order'
+import { OrderWithDetails } from '../../enterprise/entities/value-objects/order-with-details'
 import { OrdersRepository } from '../repositories/order'
 
 type FetchOrdersUseCaseRequest = PaginationParams
 
 type FetchOrdersUseCaseResponse = Either<
   {
-    items: Order[]
+    items: OrderWithDetails[]
   },
   null
 >
@@ -23,7 +23,7 @@ export class FetchOrdersUseCase {
     page,
     limit,
   }: FetchOrdersUseCaseRequest): Promise<FetchOrdersUseCaseResponse> {
-    const orders = await this.ordersRepository.findMany({
+    const orders = await this.ordersRepository.findManyWithDetails({
       page,
       limit,
     })

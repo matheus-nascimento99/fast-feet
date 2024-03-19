@@ -31,6 +31,8 @@ export class FetchOrdersController {
       throw new BadRequestException()
     }
 
-    return result.value.items.map((item) => OrderPresenter.toHTTP(item))
+    return result.value.items.map((item) =>
+      OrderPresenter.toHTTPWithDetails(item),
+    )
   }
 }
