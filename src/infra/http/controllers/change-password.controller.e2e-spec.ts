@@ -19,7 +19,7 @@ describe('Change password (e2e)', () => {
   let prisma: PrismaService
   let hashComparer: HashComparer
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule, HashModule],
       providers: [AdminFactory, DeliveryManFactory],
@@ -36,7 +36,7 @@ describe('Change password (e2e)', () => {
     await app.init()
   })
 
-  it('/:user_id/change-password [ADMIN] (PATCH)', async () => {
+  test('/:user_id/change-password [ADMIN] (PATCH)', async () => {
     const password = '1234'
     const newPassword = '12345'
 
@@ -73,7 +73,7 @@ describe('Change password (e2e)', () => {
     expect(isUserPasswordEditedEqualsNewPassword).toEqual(true)
   })
 
-  it('/:user_id/change-password [DELIVERY MAN] (PATCH)', async () => {
+  test('/:user_id/change-password [DELIVERY MAN] (PATCH)', async () => {
     const password = '1234'
     const newPassword = '12345'
 

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { Order as PrismaOrder } from '@prisma/client'
 
+import { DomainEvents } from '@/core/events/domain-events'
 import { PaginationParams } from '@/core/repositories/pagination-params'
 import { LatLng } from '@/core/types/coordinates'
 import { UniqueEntityId } from '@/core/value-objects/unique-entity-id'
@@ -97,6 +98,8 @@ export class PrismaOrdersRepository implements OrdersRepository {
       },
       data,
     })
+
+    DomainEvents.dispatchEventsForAggregate(orderId)
   }
 
   async delete(orderId: UniqueEntityId): Promise<void> {

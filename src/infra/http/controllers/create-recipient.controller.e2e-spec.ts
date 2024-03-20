@@ -13,7 +13,7 @@ describe('Create recipient (e2e)', () => {
   let jwt: JwtService
   let adminFactory: AdminFactory
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
       providers: [AdminFactory],
@@ -27,7 +27,7 @@ describe('Create recipient (e2e)', () => {
     await app.init()
   })
 
-  it('/ (POST)', async () => {
+  test('/ (POST)', async () => {
     const user = await adminFactory.makePrismaAdmin()
     const token = jwt.sign({ sub: user.id.toString(), role: 'ADMIN' })
 

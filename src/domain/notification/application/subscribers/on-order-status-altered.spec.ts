@@ -1,5 +1,6 @@
 import { makeOrder } from 'test/factories/make-order'
 import { makeRecipient } from 'test/factories/make-recipient'
+import { InMemoryDeliveryMenRepository } from 'test/repositories/in-memory-delivery-man'
 import { InMemoryNotificationsRepository } from 'test/repositories/in-memory-notification'
 import { InMemoryOrdersRepository } from 'test/repositories/in-memory-order'
 import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipient'
@@ -15,6 +16,7 @@ import { OnOrderStatusAltered } from './on-order-status-altered'
 
 let inMemoryOrdersRepository: InMemoryOrdersRepository
 let inMemoryRecipientsRepository: InMemoryRecipientsRepository
+let inMemoryDeliveryMenRepository: InMemoryDeliveryMenRepository
 let inMemoryNotificationsRepository: InMemoryNotificationsRepository
 let sendNotificationUseCase: SendNotificationUseCase
 let sendNotificationExecuteSpy: MockInstance<
@@ -24,8 +26,11 @@ let sendNotificationExecuteSpy: MockInstance<
 
 describe('On order status altered', () => {
   beforeEach(() => {
-    inMemoryOrdersRepository = new InMemoryOrdersRepository()
     inMemoryRecipientsRepository = new InMemoryRecipientsRepository()
+    inMemoryOrdersRepository = new InMemoryOrdersRepository(
+      inMemoryRecipientsRepository,
+      inMemoryDeliveryMenRepository,
+    )
     inMemoryNotificationsRepository = new InMemoryNotificationsRepository()
 
     sendNotificationUseCase = new SendNotificationUseCase(

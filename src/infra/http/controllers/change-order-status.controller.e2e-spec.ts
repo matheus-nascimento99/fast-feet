@@ -21,7 +21,7 @@ describe('Change order status (e2e)', () => {
   let recipientFactory: RecipientFactory
   let prisma: PrismaService
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
       providers: [
@@ -43,7 +43,7 @@ describe('Change order status (e2e)', () => {
     await app.init()
   })
 
-  it('/:order_id/change-status/:status [RETIRED] (PATCH)', async () => {
+  test('/:order_id/change-status/:status [RETIRED] (PATCH)', async () => {
     const recipient = await recipientFactory.makePrismaRecipient()
     const deliveryMan = await deliveryManFactory.makePrismaDeliveryMan()
 
@@ -73,7 +73,7 @@ describe('Change order status (e2e)', () => {
     expect(orderEdited).toEqual(expect.objectContaining({ status: 'RETIRED' }))
   })
 
-  it('/:order_id/change-status/:status [RETURNED] (PATCH)', async () => {
+  test('/:order_id/change-status/:status [RETURNED] (PATCH)', async () => {
     const recipient = await recipientFactory.makePrismaRecipient()
     const deliveryMan = await deliveryManFactory.makePrismaDeliveryMan()
 
@@ -103,7 +103,7 @@ describe('Change order status (e2e)', () => {
     expect(orderEdited).toEqual(expect.objectContaining({ status: 'RETURNED' }))
   })
 
-  it('/:order_id/change-status/:status [DELIVERED] (PATCH)', async () => {
+  test('/:order_id/change-status/:status [DELIVERED] (PATCH)', async () => {
     const recipient = await recipientFactory.makePrismaRecipient()
     const deliveryMan = await deliveryManFactory.makePrismaDeliveryMan()
 

@@ -17,9 +17,12 @@ let sut: EditOrderUseCase
 
 describe('Edit order use case', () => {
   beforeEach(() => {
-    inMemoryOrdersRepository = new InMemoryOrdersRepository()
     inMemoryDeliveryMenRepository = new InMemoryDeliveryMenRepository()
     inMemoryRecipientsRepository = new InMemoryRecipientsRepository()
+    inMemoryOrdersRepository = new InMemoryOrdersRepository(
+      inMemoryRecipientsRepository,
+      inMemoryDeliveryMenRepository,
+    )
 
     sut = new EditOrderUseCase(
       inMemoryOrdersRepository,

@@ -16,7 +16,7 @@ describe('Fetch orders by delivery man (e2e)', () => {
   let recipientFactory: RecipientFactory
   let orderFactory: OrderFactory
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
       providers: [DeliveryManFactory, RecipientFactory, OrderFactory],
@@ -32,7 +32,7 @@ describe('Fetch orders by delivery man (e2e)', () => {
     await app.init()
   })
 
-  it('/:delivery_man_id/delivery-man (GET)', async () => {
+  test('/:delivery_man_id/delivery-man (GET)', async () => {
     const deliveryMan = await deliveryManFactory.makePrismaDeliveryMan()
 
     const token = jwt.sign({
@@ -57,7 +57,7 @@ describe('Fetch orders by delivery man (e2e)', () => {
     expect(result.body).toHaveLength(11)
   })
 
-  it('/ (GET) [paginated]', async () => {
+  test('/ (GET) [paginated]', async () => {
     const deliveryMan = await deliveryManFactory.makePrismaDeliveryMan()
 
     const token = jwt.sign({

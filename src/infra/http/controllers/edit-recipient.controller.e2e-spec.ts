@@ -17,7 +17,7 @@ describe('Edit recipient (e2e)', () => {
   let recipientFactory: RecipientFactory
   let prisma: PrismaService
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
       providers: [AdminFactory, RecipientFactory],
@@ -33,7 +33,7 @@ describe('Edit recipient (e2e)', () => {
     await app.init()
   })
 
-  it('/:recipient_id (PUT)', async () => {
+  test('/:recipient_id (PUT)', async () => {
     const user = await adminFactory.makePrismaAdmin()
     const token = jwt.sign({ sub: user.id.toString(), role: 'ADMIN' })
 

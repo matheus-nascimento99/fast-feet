@@ -13,7 +13,7 @@ describe('Authenticate (e2e)', () => {
   let adminFactory: AdminFactory
   let deliveryManFactory: DeliveryManFactory
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
       providers: [AdminFactory, DeliveryManFactory],
@@ -27,7 +27,7 @@ describe('Authenticate (e2e)', () => {
     await app.init()
   })
 
-  it('/ (POST) [ADMIN]', async () => {
+  test('/ (POST) [ADMIN]', async () => {
     const admin = await adminFactory.makePrismaAdmin()
 
     const authenticateAdmin = await request(app.getHttpServer())
@@ -43,7 +43,7 @@ describe('Authenticate (e2e)', () => {
     })
   })
 
-  it('/ (POST) [DELIVERY MAN]', async () => {
+  test('/ (POST) [DELIVERY MAN]', async () => {
     const deliveryMan = await deliveryManFactory.makePrismaDeliveryMan()
 
     const authenticateDeliveryMan = await request(app.getHttpServer())

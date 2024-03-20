@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker'
 import { INestApplication } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -7,15 +6,16 @@ import { AdminFactory } from 'test/factories/make-admin'
 import { DeliveryManFactory } from 'test/factories/make-delivery-man'
 import { OrderFactory } from 'test/factories/make-order'
 import { RecipientFactory } from 'test/factories/make-recipient'
+import { waitFor } from 'test/utils/wait-for'
 
+import { DomainEvents } from '@/core/events/domain-events'
 import { AppModule } from '@/infra/app.module'
 import { DatabaseModule } from '@/infra/database/database.module'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
 
-describe('Edit order (e2e)', () => {
+describe('On order status  (e2e)', () => {
   let app: INestApplication
   let jwt: JwtService
-  let adminFactory: AdminFactory
   let orderFactory: OrderFactory
   let deliveryManFactory: DeliveryManFactory
   let recipientFactory: RecipientFactory
@@ -36,53 +36,44 @@ describe('Edit order (e2e)', () => {
 
     jwt = moduleRef.get(JwtService)
     prisma = moduleRef.get(PrismaService)
-    adminFactory = moduleRef.get(AdminFactory)
     orderFactory = moduleRef.get(OrderFactory)
     recipientFactory = moduleRef.get(RecipientFactory)
     deliveryManFactory = moduleRef.get(DeliveryManFactory)
 
+    DomainEvents.shouldRun = true
+
     await app.init()
   })
 
-  test('/:order_id (PUT)', async () => {
-    const user = await adminFactory.makePrismaAdmin()
-    const token = jwt.sign({ sub: user.id.toString(), role: 'ADMIN' })
-
+  it('should be able to send notification when order status changes', async () => {
     const recipient = await recipientFactory.makePrismaRecipient()
     const deliveryMan = await deliveryManFactory.makePrismaDeliveryMan()
+
+    const token = jwt.sign({
+      sub: deliveryMan.id.toString(),
+      role: 'DELIVERYMAN',
+    })
 
     const order = await orderFactory.makePrismaOrder({
       deliveryManId: deliveryMan.id.toString(),
       recipientId: recipient.id.toString(),
     })
 
-    const newRecipient = await recipientFactory.makePrismaRecipient()
-    const newDeliveryMan = await deliveryManFactory.makePrismaDeliveryMan()
-
-    const newOrder = {
-      deliveryManId: newDeliveryMan.id.toString(),
-      recipientId: newRecipient.id.toString(),
-      coordinates: {
-        lat: faker.location.latitude(),
-        lng: faker.location.longitude(),
-      },
-    }
-
-    const result = await request(app.getHttpServer())
-      .put(`/orders/${order.id.toString()}`)
+    await request(app.getHttpServer())
+      .patch(`/orders/${order.id.toString()}/change-status/retired`)
       .set('Authorization', `Bearer ${token}`)
-      .send(newOrder)
+      .send()
 
-    const orderEdited = await prisma.order.findUnique({
-      where: {
-        id: order.id.toString(),
-      },
+    const recipientId = recipient.id.toString()
+
+    await waitFor(async () => {
+      const notification = await prisma.notification.findFirst({
+        where: {
+          recipientId,
+        },
+      })
+
+      expect(notification).not.toBeNull()
     })
-
-    expect(result.statusCode).toEqual(204)
-    expect(orderEdited).toBeTruthy()
-    expect(orderEdited).toEqual(
-      expect.objectContaining({ deliveryManId: newOrder?.deliveryManId }),
-    )
   })
 })

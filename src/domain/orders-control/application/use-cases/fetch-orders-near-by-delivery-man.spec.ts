@@ -3,6 +3,7 @@ import { makeDeliveryMan } from 'test/factories/make-delivery-man'
 import { makeOrder } from 'test/factories/make-order'
 import { InMemoryDeliveryMenRepository } from 'test/repositories/in-memory-delivery-man'
 import { InMemoryOrdersRepository } from 'test/repositories/in-memory-order'
+import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipient'
 
 import { NotAuthorizedError } from '@/core/errors/not-authorized-error'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
@@ -10,13 +11,17 @@ import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { FetchOrdersNearByDeliveryManUseCase } from './fetch-orders-near-by-delivery-man'
 
 let inMemoryOrdersRepository: InMemoryOrdersRepository
+let inMemoryRecipientsRepository: InMemoryRecipientsRepository
 let inMemoryDeliveryMenRepository: InMemoryDeliveryMenRepository
 let sut: FetchOrdersNearByDeliveryManUseCase
 
 describe('Fetch orders use case near by delivery man', () => {
   beforeEach(() => {
-    inMemoryOrdersRepository = new InMemoryOrdersRepository()
     inMemoryDeliveryMenRepository = new InMemoryDeliveryMenRepository()
+    inMemoryOrdersRepository = new InMemoryOrdersRepository(
+      inMemoryRecipientsRepository,
+      inMemoryDeliveryMenRepository,
+    )
     sut = new FetchOrdersNearByDeliveryManUseCase(
       inMemoryOrdersRepository,
       inMemoryDeliveryMenRepository,

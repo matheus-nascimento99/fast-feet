@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common'
+
 import { Either, left, right } from '@/core/either'
 import { BadRequestError } from '@/core/errors/bad-request-error'
 import { NotAuthorizedError } from '@/core/errors/not-authorized-error'
@@ -15,7 +17,7 @@ type ReadNotificationUseCaseResponse = Either<
   { notification: Notification },
   BadRequestError | NotAuthorizedError
 >
-
+@Injectable()
 export class ReadNotificationUseCase {
   constructor(private notificationsRepository: NotificationsRepository) {}
 
@@ -37,7 +39,10 @@ export class ReadNotificationUseCase {
 
     notification.read()
 
-    await this.notificationsRepository.save(notification)
+    await this.notificationsRepository.save(
+      new UniqueEntityId(notificationId),
+      notification,
+    )
 
     return right({
       notification,

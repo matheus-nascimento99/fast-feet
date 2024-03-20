@@ -14,7 +14,7 @@ describe('Fetch delivery men (e2e)', () => {
   let adminFactory: AdminFactory
   let deliveryManFactory: DeliveryManFactory
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
       providers: [AdminFactory, DeliveryManFactory],
@@ -29,7 +29,7 @@ describe('Fetch delivery men (e2e)', () => {
     await app.init()
   })
 
-  it('/ (GET)', async () => {
+  test('/ (GET)', async () => {
     const user = await adminFactory.makePrismaAdmin()
     const token = jwt.sign({ sub: user.id.toString(), role: 'ADMIN' })
 

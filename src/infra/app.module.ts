@@ -6,6 +6,7 @@ import { AuthModule } from '@/auth/auth.module'
 import { PrismaService } from './database/prisma/prisma.service'
 import { envSchema } from './env/env'
 import { EnvModule } from './env/env.module'
+import { EventsModule } from './events/events.module'
 import { AuthenticateController } from './http/controllers/authenticate.controller'
 import { CreateUserController } from './http/controllers/create-user.controller'
 import { HttpModule } from './http/controllers/http.module'
@@ -19,6 +20,7 @@ import { HttpModule } from './http/controllers/http.module'
     AuthModule,
     HttpModule,
     EnvModule,
+    EventsModule,
   ],
   controllers: [CreateUserController, AuthenticateController],
   providers: [PrismaService],

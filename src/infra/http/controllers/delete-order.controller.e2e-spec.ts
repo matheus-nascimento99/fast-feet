@@ -20,7 +20,7 @@ describe('Delete order (e2e)', () => {
   let orderFactory: OrderFactory
   let prisma: PrismaService
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
       providers: [
@@ -43,7 +43,7 @@ describe('Delete order (e2e)', () => {
     await app.init()
   })
 
-  it('/:order_id (DELETE)', async () => {
+  test('/:order_id (DELETE)', async () => {
     const user = await adminFactory.makePrismaAdmin()
     const token = jwt.sign({ sub: user.id.toString(), role: 'ADMIN' })
 

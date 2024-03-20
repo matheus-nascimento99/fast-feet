@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common'
+
 import { DomainEvents } from '@/core/events/domain-events'
 import { EventHandler } from '@/core/events/event-handler'
 import { RecipientsRepository } from '@/domain/orders-control/application/repositories/recipient'
@@ -5,6 +7,7 @@ import { OrderStatusAlteredEvent } from '@/domain/orders-control/enterprise/even
 
 import { SendNotificationUseCase } from '../use-cases/send-notification'
 
+@Injectable()
 export class OnOrderStatusAltered implements EventHandler {
   constructor(
     private recipientsRepository: RecipientsRepository,

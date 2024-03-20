@@ -1,5 +1,7 @@
 import { makeOrder } from 'test/factories/make-order'
+import { InMemoryDeliveryMenRepository } from 'test/repositories/in-memory-delivery-man'
 import { InMemoryOrdersRepository } from 'test/repositories/in-memory-order'
+import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipient'
 import { FakeStorage } from 'test/storage/fake-storage'
 
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
@@ -9,12 +11,17 @@ import { InvalidAttachmentType } from './errors/invalid-attachment-type'
 import { SaveOrderAttachmentUseCase } from './save-order-attachment'
 
 let inMemoryOrdersRepository: InMemoryOrdersRepository
+let inMemoryDeliveryMenRepository: InMemoryDeliveryMenRepository
+let inMemoryRecipientsRepository: InMemoryRecipientsRepository
 let fakeStorage: FakeStorage
 let sut: SaveOrderAttachmentUseCase
 
 describe('Save order attachment use case', () => {
   beforeEach(() => {
-    inMemoryOrdersRepository = new InMemoryOrdersRepository()
+    inMemoryOrdersRepository = new InMemoryOrdersRepository(
+      inMemoryRecipientsRepository,
+      inMemoryDeliveryMenRepository,
+    )
     fakeStorage = new FakeStorage()
     sut = new SaveOrderAttachmentUseCase(inMemoryOrdersRepository, fakeStorage)
   })

@@ -14,7 +14,7 @@ describe('Create user (e2e)', () => {
   let jwt: JwtService
   let adminFactory: AdminFactory
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
       providers: [AdminFactory, DeliveryManFactory],
@@ -28,7 +28,7 @@ describe('Create user (e2e)', () => {
     await app.init()
   })
 
-  it('/ (POST) [ADMIN]', async () => {
+  test('/ (POST) [ADMIN]', async () => {
     const user = await adminFactory.makePrismaAdmin()
     const token = jwt.sign({ sub: user.id.toString(), role: 'ADMIN' })
 
@@ -47,7 +47,7 @@ describe('Create user (e2e)', () => {
     expect(createUser.statusCode).toEqual(201)
   })
 
-  it('/ (POST) [DELIVERY MAN]', async () => {
+  test('/ (POST) [DELIVERY MAN]', async () => {
     const user = await adminFactory.makePrismaAdmin()
     const token = jwt.sign({ sub: user.id.toString(), role: 'ADMIN' })
 

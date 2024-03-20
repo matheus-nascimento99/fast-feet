@@ -1,17 +1,24 @@
 import { makeOrder } from 'test/factories/make-order'
+import { InMemoryDeliveryMenRepository } from 'test/repositories/in-memory-delivery-man'
 import { InMemoryOrdersRepository } from 'test/repositories/in-memory-order'
+import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipient'
 
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { UniqueEntityId } from '@/core/value-objects/unique-entity-id'
 
 import { DeleteOrderUseCase } from './delete-order'
 
+let inMemoryRecipientsRepository: InMemoryRecipientsRepository
+let inMemoryDeliveryMenRepository: InMemoryDeliveryMenRepository
 let inMemoryOrdersRepository: InMemoryOrdersRepository
 let sut: DeleteOrderUseCase
 
 describe('Delete order use case', () => {
   beforeEach(() => {
-    inMemoryOrdersRepository = new InMemoryOrdersRepository()
+    inMemoryOrdersRepository = new InMemoryOrdersRepository(
+      inMemoryRecipientsRepository,
+      inMemoryDeliveryMenRepository,
+    )
     sut = new DeleteOrderUseCase(inMemoryOrdersRepository)
   })
 

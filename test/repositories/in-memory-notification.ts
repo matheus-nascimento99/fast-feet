@@ -23,9 +23,9 @@ export class InMemoryNotificationsRepository
     return notification
   }
 
-  async save(data: Notification) {
-    const notificationIndex = this.items.findIndex(
-      (item) => item.id === data.id,
+  async save(notificationId: UniqueEntityId, data: Notification) {
+    const notificationIndex = this.items.findIndex((item) =>
+      item.id.equals(notificationId),
     )
 
     this.items[notificationIndex] = data

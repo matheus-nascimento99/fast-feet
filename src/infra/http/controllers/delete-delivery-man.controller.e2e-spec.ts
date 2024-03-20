@@ -16,7 +16,7 @@ describe('Delete delivery man (e2e)', () => {
   let adminFactory: AdminFactory
   let prisma: PrismaService
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
       providers: [AdminFactory, DeliveryManFactory],
@@ -32,7 +32,7 @@ describe('Delete delivery man (e2e)', () => {
     await app.init()
   })
 
-  it('/:id (DELETE)', async () => {
+  test('/:id (DELETE)', async () => {
     const user = await adminFactory.makePrismaAdmin()
     const token = jwt.sign({ sub: user.id.toString(), role: 'ADMIN' })
 

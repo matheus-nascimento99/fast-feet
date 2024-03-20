@@ -5,6 +5,8 @@ import { randomUUID } from 'node:crypto'
 
 import { PrismaClient } from '@prisma/client'
 
+import { DomainEvents } from '@/core/events/domain-events'
+
 const prisma = new PrismaClient()
 
 const generateDatabaseUrl = (schema: string) => {
@@ -24,6 +26,8 @@ beforeAll(() => {
   const newUrlDatabase = generateDatabaseUrl(schema)
 
   process.env.DATABASE_URL = newUrlDatabase
+
+  DomainEvents.shouldRun = false
 
   execSync(`npx prisma migrate deploy`)
 })

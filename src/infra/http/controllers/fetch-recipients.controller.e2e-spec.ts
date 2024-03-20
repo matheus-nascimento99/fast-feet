@@ -14,7 +14,7 @@ describe('Fetch recipients (e2e)', () => {
   let adminFactory: AdminFactory
   let recipientFactory: RecipientFactory
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
       providers: [AdminFactory, RecipientFactory],
@@ -29,7 +29,7 @@ describe('Fetch recipients (e2e)', () => {
     await app.init()
   })
 
-  it('/ (GET)', async () => {
+  test('/ (GET)', async () => {
     const user = await adminFactory.makePrismaAdmin()
     const token = jwt.sign({ sub: user.id.toString(), role: 'ADMIN' })
 
@@ -45,7 +45,7 @@ describe('Fetch recipients (e2e)', () => {
     expect(result.body).toHaveLength(10)
   })
 
-  it('/ (GET) [paginated]', async () => {
+  test('/ (GET) [paginated]', async () => {
     const user = await adminFactory.makePrismaAdmin()
     const token = jwt.sign({ sub: user.id.toString(), role: 'ADMIN' })
 

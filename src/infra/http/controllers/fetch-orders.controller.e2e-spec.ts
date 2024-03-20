@@ -18,7 +18,7 @@ describe('Fetch orders (e2e)', () => {
   let recipientFactory: RecipientFactory
   let orderFactory: OrderFactory
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
       providers: [
@@ -40,7 +40,7 @@ describe('Fetch orders (e2e)', () => {
     await app.init()
   })
 
-  it('/ (GET)', async () => {
+  test('/ (GET)', async () => {
     const user = await adminFactory.makePrismaAdmin()
     const token = jwt.sign({ sub: user.id.toString(), role: 'ADMIN' })
 
@@ -70,7 +70,7 @@ describe('Fetch orders (e2e)', () => {
     )
   })
 
-  it.skip('/ (GET) [paginated]', async () => {
+  test('/ (GET) [paginated]', async () => {
     const user = await adminFactory.makePrismaAdmin()
     const token = jwt.sign({ sub: user.id.toString(), role: 'ADMIN' })
 

@@ -62,21 +62,35 @@ model Order {
 }
 
 model Recipient {
-  id                     String    @unique @default(uuid())
+  id                     String         @unique @default(uuid())
   name                   String
-  individualRegistration String    @unique @map("individual_registration")
+  individualRegistration String         @unique @map("individual_registration")
   orders                 Order[]
-  cellphone              String    @unique
-  email                  String    @unique
+  cellphone              String         @unique
+  email                  String         @unique
   postalCode             String
   street                 String
-  streetNumber           Int       @map("street_number")
+  streetNumber           Int            @map("street_number")
   complement             String?
   neighborhood           String
   city                   String
   state                  String
-  createdAt              DateTime  @default(now()) @map("created_at")
-  updatedAt              DateTime? @updatedAt @map("updated_at")
+  createdAt              DateTime       @default(now()) @map("created_at")
+  updatedAt              DateTime?      @updatedAt @map("updated_at")
+  notifications          Notification[]
 
   @@map("recipients")
+}
+
+model Notification {
+  id          String    @unique @default(uuid())
+  recipientId String
+  title       String
+  content     String
+  readAt      DateTime? @map("read_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  recipient Recipient @relation(fields: [recipientId], references: [id])
+
+  @@map("notifications")
 }

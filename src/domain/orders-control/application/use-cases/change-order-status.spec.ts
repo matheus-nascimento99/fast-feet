@@ -3,6 +3,7 @@ import { makeDeliveryMan } from 'test/factories/make-delivery-man'
 import { makeOrder } from 'test/factories/make-order'
 import { InMemoryDeliveryMenRepository } from 'test/repositories/in-memory-delivery-man'
 import { InMemoryOrdersRepository } from 'test/repositories/in-memory-order'
+import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipient'
 
 import { BadRequestError } from '@/core/errors/bad-request-error'
 import { NotAuthorizedError } from '@/core/errors/not-authorized-error'
@@ -13,13 +14,17 @@ import { Attachment } from '../../enterprise/entities/attachment'
 import { ChangeOrderStatusUseCase } from './change-order-status'
 
 let inMemoryOrdersRepository: InMemoryOrdersRepository
+let inMemoryRecipientsRepository: InMemoryRecipientsRepository
 let inMemoryDeliveryMenRepository: InMemoryDeliveryMenRepository
 let sut: ChangeOrderStatusUseCase
 
 describe('Change status order use case', () => {
   beforeEach(() => {
-    inMemoryOrdersRepository = new InMemoryOrdersRepository()
     inMemoryDeliveryMenRepository = new InMemoryDeliveryMenRepository()
+    inMemoryOrdersRepository = new InMemoryOrdersRepository(
+      inMemoryRecipientsRepository,
+      inMemoryDeliveryMenRepository,
+    )
     sut = new ChangeOrderStatusUseCase(
       inMemoryOrdersRepository,
       inMemoryDeliveryMenRepository,
