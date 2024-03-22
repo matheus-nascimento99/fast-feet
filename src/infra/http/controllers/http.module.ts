@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 
+import { ReadNotificationUseCase } from '@/domain/notification/application/use-cases/read-notification'
 import { AuthenticateUseCase } from '@/domain/orders-control/application/use-cases/authenticate'
 import { ChangeOrderStatusUseCase } from '@/domain/orders-control/application/use-cases/change-order-status'
 import { ChangePasswordUseCase } from '@/domain/orders-control/application/use-cases/change-password'
@@ -41,6 +42,7 @@ import { FetchOrdersController } from './fetch-orders.controller'
 import { FetchOrdersByDeliveryManController } from './fetch-orders-by-delivery-man.controller'
 import { FetchOrdersNearByDeliveryManController } from './fetch-orders-near-by-delivery-man.controller'
 import { FetchRecipientsController } from './fetch-recipients.controller'
+import { ReadNotificationController } from './read-notification.controller'
 import { SaveOrderAttachmentController } from './save-order-attachment.controller'
 
 @Module({
@@ -64,6 +66,7 @@ import { SaveOrderAttachmentController } from './save-order-attachment.controlle
     FetchOrdersNearByDeliveryManController,
     FetchOrdersByDeliveryManController,
     ChangePasswordController,
+    ReadNotificationController,
   ],
   providers: [
     AuthenticateUseCase,
@@ -85,6 +88,7 @@ import { SaveOrderAttachmentController } from './save-order-attachment.controlle
     FetchOrdersNearByDeliveryManUseCase,
     FetchOrdersByDeliveryManUseCase,
     ChangePasswordUseCase,
+    ReadNotificationUseCase,
   ],
   exports: [
     AuthenticateUseCase,
@@ -106,6 +110,7 @@ import { SaveOrderAttachmentController } from './save-order-attachment.controlle
     FetchOrdersNearByDeliveryManUseCase,
     FetchOrdersByDeliveryManUseCase,
     ChangePasswordUseCase,
+    ReadNotificationUseCase,
   ],
 })
 export class HttpModule {}

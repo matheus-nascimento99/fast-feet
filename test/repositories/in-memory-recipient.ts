@@ -28,6 +28,40 @@ export class InMemoryRecipientsRepository implements RecipientsRepository {
     return recipient
   }
 
+  async findByIndividualRegistration(individualRegistration: string) {
+    const recipient = this.items.find(
+      (item) => item.individualRegistration.value === individualRegistration,
+    )
+
+    if (!recipient) {
+      return null
+    }
+
+    return recipient
+  }
+
+  async findByEmail(email: string) {
+    const recipient = this.items.find((item) => item.email === email)
+
+    if (!recipient) {
+      return null
+    }
+
+    return recipient
+  }
+
+  async findByCellphone(cellphone: string) {
+    const recipient = this.items.find(
+      (item) => item.cellphone.value === cellphone,
+    )
+
+    if (!recipient) {
+      return null
+    }
+
+    return recipient
+  }
+
   async save(recipientId: UniqueEntityId, data: Recipient) {
     const recipientIndex = this.items.findIndex(
       (item) => item.id === recipientId,

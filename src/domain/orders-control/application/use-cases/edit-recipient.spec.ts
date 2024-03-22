@@ -28,13 +28,6 @@ describe('Edit recipient use case', () => {
       individualRegistration: '123.456.789-10',
       email: 'example-email-updated@mail.com',
       cellphone: '+551198425-1086',
-      postalCode: '12955-000',
-      street: 'example-street-updated',
-      streetNumber: 2,
-      complement: 'example-complement-updated',
-      neighborhood: 'example-neighborhood-updated',
-      city: 'example-city-updated',
-      state: 'example-state-updated',
     })
 
     expect(inMemoryRecipientsRepository.items[0]).toMatchObject({
@@ -56,13 +49,6 @@ describe('Edit recipient use case', () => {
       individualRegistration: '123.456.789-10',
       email: 'example-email-updated@mail.com',
       cellphone: '+551198425-1086',
-      postalCode: '12955-000',
-      street: 'example-street-updated',
-      streetNumber: 2,
-      complement: 'example-complement-updated',
-      neighborhood: 'example-neighborhood-updated',
-      city: 'example-city-updated',
-      state: 'example-state-updated',
     })
 
     expect(result.isLeft()).toEqual(true)

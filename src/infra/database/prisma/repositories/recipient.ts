@@ -15,13 +15,13 @@ export class PrismaRecipientsRepository implements RecipientsRepository {
   async create(recipient: Recipient): Promise<void> {
     const data = PrismaRecipientsMapper.toPrisma(recipient)
 
-    await this.prisma.recipient.create({
+    await this.prisma.user.create({
       data,
     })
   }
 
   async findById(recipientId: string): Promise<Recipient | null> {
-    const recipient = await this.prisma.recipient.findUnique({
+    const recipient = await this.prisma.user.findUnique({
       where: {
         id: recipientId,
       },
@@ -35,7 +35,10 @@ export class PrismaRecipientsRepository implements RecipientsRepository {
   }
 
   async findMany({ limit, page }: PaginationParams): Promise<Recipient[]> {
-    const recipients = await this.prisma.recipient.findMany({
+    const recipients = await this.prisma.user.findMany({
+      where: {
+        role: 'RECIPIENT',
+      },
       take: limit,
       skip: (page - 1) * limit,
     })
@@ -45,10 +48,54 @@ export class PrismaRecipientsRepository implements RecipientsRepository {
     )
   }
 
+  async findByEmail(email: string): Promise<Recipient | null> {
+    const recipient = await this.prisma.user.findUnique({
+      where: {
+        email,
+      },
+    })
+
+    if (!recipient) {
+      return null
+    }
+
+    return PrismaRecipientsMapper.toDomain(recipient)
+  }
+
+  async findByIndividualRegistration(
+    individualRegistration: string,
+  ): Promise<Recipient | null> {
+    const recipient = await this.prisma.user.findUnique({
+      where: {
+        individualRegistration,
+      },
+    })
+
+    if (!recipient) {
+      return null
+    }
+
+    return PrismaRecipientsMapper.toDomain(recipient)
+  }
+
+  async findByCellphone(cellphone: string): Promise<Recipient | null> {
+    const recipient = await this.prisma.user.findUnique({
+      where: {
+        cellphone,
+      },
+    })
+
+    if (!recipient) {
+      return null
+    }
+
+    return PrismaRecipientsMapper.toDomain(recipient)
+  }
+
   async save(recipientId: UniqueEntityId, recipient: Recipient): Promise<void> {
     const data = PrismaRecipientsMapper.toPrisma(recipient)
 
-    await this.prisma.recipient.update({
+    await this.prisma.user.update({
       where: {
         id: recipientId.toString(),
       },
@@ -57,7 +104,7 @@ export class PrismaRecipientsRepository implements RecipientsRepository {
   }
 
   async delete(recipientId: UniqueEntityId): Promise<void> {
-    await this.prisma.recipient.delete({
+    await this.prisma.user.delete({
       where: {
         id: recipientId.toString(),
       },

@@ -5,6 +5,7 @@ export class DeliveryManPresenter {
     return {
       id: deliveryMan.id.toString(),
       name: deliveryMan.name,
+      email: deliveryMan.email,
       individualRegistration: deliveryMan.individualRegistration.value,
       cellphone: deliveryMan.cellphone.value,
       createdAt: deliveryMan.createdAt,

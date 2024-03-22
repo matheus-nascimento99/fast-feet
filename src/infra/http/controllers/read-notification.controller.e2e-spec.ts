@@ -2,53 +2,63 @@ import { INestApplication } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Test, TestingModule } from '@nestjs/testing'
 import request from 'supertest'
-import { AdminFactory } from 'test/factories/make-admin'
+import { NotificationFactory } from 'test/factories/make-notification'
 import { RecipientFactory } from 'test/factories/make-recipient'
 
 import { AppModule } from '@/infra/app.module'
 import { DatabaseModule } from '@/infra/database/database.module'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
 
-describe('Delete recipient (e2e)', () => {
+describe('Read notification (e2e)', () => {
   let app: INestApplication
   let jwt: JwtService
-  let adminFactory: AdminFactory
-  let recipientFactory: RecipientFactory
   let prisma: PrismaService
+  let recipientFactory: RecipientFactory
+  let notificationFactory: NotificationFactory
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [AdminFactory, RecipientFactory],
+      providers: [RecipientFactory, NotificationFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
 
     jwt = moduleRef.get(JwtService)
     prisma = moduleRef.get(PrismaService)
-    adminFactory = moduleRef.get(AdminFactory)
     recipientFactory = moduleRef.get(RecipientFactory)
+    notificationFactory = moduleRef.get(NotificationFactory)
 
     await app.init()
   })
 
-  test('/:order_id (DELETE)', async () => {
-    const user = await adminFactory.makePrismaAdmin()
-    const token = jwt.sign({ sub: user.id.toString(), role: 'ADMIN' })
-
+  test('/notifications/:notification_id/read [PATCH]', async () => {
     const recipient = await recipientFactory.makePrismaRecipient()
 
-    const result = await request(app.getHttpServer())
-      .delete(`/recipients/${recipient.id.toString()}`)
-      .set('Authorization', `Bearer ${token}`)
+    const token = jwt.sign({
+      sub: recipient.id.toString(),
+      role: 'RECIPIENT',
+    })
 
-    const recipientDeleted = await prisma.user.findUnique({
+    const notification = await notificationFactory.makePrismaNotification({
+      recipientId: recipient.id.toString(),
+    })
+
+    const result = await request(app.getHttpServer())
+      .patch(`/notifications/${notification.id.toString()}/read`)
+      .set('Authorization', `Bearer ${token}`)
+      .send()
+
+    const notificationRead = await prisma.notification.findFirst({
       where: {
-        id: recipient.id.toString(),
+        recipientId: recipient.id.toString(),
       },
     })
 
     expect(result.statusCode).toEqual(204)
-    expect(recipientDeleted).toBeNull()
+    expect(notificationRead).not.toBeNull()
+    expect(notificationRead).toMatchObject({
+      readAt: expect.any(Date),
+    })
   })
 })

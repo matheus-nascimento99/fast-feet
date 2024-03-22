@@ -7,9 +7,11 @@ import { UniqueEntityId } from '@/core/value-objects/unique-entity-id'
 
 import { Admin } from '../../enterprise/entities/admin'
 import { DeliveryMan } from '../../enterprise/entities/delivery-man'
+import { Recipient } from '../../enterprise/entities/recipient'
 import { HashCreator } from '../hash/hash-creator'
 import { AdminsRepository } from '../repositories/admin'
 import { DeliveryMenRepository } from '../repositories/delivery-man'
+import { RecipientsRepository } from '../repositories/recipient'
 
 interface ChangePasswordUseCaseRequest {
   userId: string
@@ -22,6 +24,7 @@ export class ChangePasswordUseCase {
   constructor(
     private adminsRepository: AdminsRepository,
     private deliveryMenRepository: DeliveryMenRepository,
+    private recipientsRepository: RecipientsRepository,
     private hashCreator: HashCreator,
   ) {}
 
@@ -57,6 +60,8 @@ export class ChangePasswordUseCase {
       await this.adminsRepository.save(new UniqueEntityId(userId), user)
     } else if (user instanceof DeliveryMan) {
       await this.deliveryMenRepository.save(new UniqueEntityId(userId), user)
+    } else if (user instanceof Recipient) {
+      await this.recipientsRepository.save(new UniqueEntityId(userId), user)
     }
 
     return right({})

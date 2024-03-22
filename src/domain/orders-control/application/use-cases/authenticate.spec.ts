@@ -1,9 +1,11 @@
 import { FakeCryptographer } from 'test/cryptography/fake-cryptographer'
 import { makeAdmin } from 'test/factories/make-admin'
 import { makeDeliveryMan } from 'test/factories/make-delivery-man'
+import { makeRecipient } from 'test/factories/make-recipient'
 import { FakeHasher } from 'test/hash/fake-hasher'
 import { InMemoryAdminsRepository } from 'test/repositories/in-memory-admin'
 import { InMemoryDeliveryMenRepository } from 'test/repositories/in-memory-delivery-man'
+import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipient'
 
 import { NotAuthorizedError } from '@/core/errors/not-authorized-error'
 
@@ -12,6 +14,7 @@ import { AuthenticateUseCase } from './authenticate'
 
 let inMemoryDeliveryMenRepository: InMemoryDeliveryMenRepository
 let inMemoryAdminsRepository: InMemoryAdminsRepository
+let inMemoryRecipientsRepository: InMemoryRecipientsRepository
 let fakeHasher: FakeHasher
 let fakeCryptographer: FakeCryptographer
 let sut: AuthenticateUseCase
@@ -25,12 +28,14 @@ describe('Authenticate use case', () => {
   beforeEach(async () => {
     inMemoryAdminsRepository = new InMemoryAdminsRepository()
     inMemoryDeliveryMenRepository = new InMemoryDeliveryMenRepository()
+    inMemoryRecipientsRepository = new InMemoryRecipientsRepository()
     fakeHasher = new FakeHasher()
     fakeCryptographer = new FakeCryptographer()
 
     sut = new AuthenticateUseCase(
       inMemoryAdminsRepository,
       inMemoryDeliveryMenRepository,
+      inMemoryRecipientsRepository,
       fakeHasher,
       fakeCryptographer,
     )
@@ -68,6 +73,27 @@ describe('Authenticate use case', () => {
     })
 
     inMemoryDeliveryMenRepository.create(deliveryMan)
+
+    const result = await sut.execute({
+      individualRegistration: USER_INDIVIDUAL_REGISTRATION,
+      password: USER_PASSWORD,
+    })
+
+    expect(result.isRight()).toEqual(true)
+    expect(result.value).toMatchObject({
+      accessToken: expect.any(String),
+    })
+  })
+
+  it('should be able to authenticate with a recipient', async () => {
+    const recipient = makeRecipient({
+      individualRegistration: Mask.takeOffFromText(
+        USER_INDIVIDUAL_REGISTRATION,
+      ),
+      password,
+    })
+
+    inMemoryRecipientsRepository.create(recipient)
 
     const result = await sut.execute({
       individualRegistration: USER_INDIVIDUAL_REGISTRATION,
@@ -118,6 +144,25 @@ describe('Authenticate use case', () => {
     expect(result.value).toBeInstanceOf(NotAuthorizedError)
   })
 
+  it('should not be able to authenticate with an inexistent recipient', async () => {
+    const recipient = makeRecipient({
+      individualRegistration: Mask.takeOffFromText(
+        USER_INDIVIDUAL_REGISTRATION,
+      ),
+      password,
+    })
+
+    inMemoryRecipientsRepository.create(recipient)
+
+    const result = await sut.execute({
+      individualRegistration: 'inexistent-recipient-individual-registration',
+      password: USER_PASSWORD,
+    })
+
+    expect(result.isLeft()).toEqual(true)
+    expect(result.value).toBeInstanceOf(NotAuthorizedError)
+  })
+
   it('should not be able to authenticate an admin with wrong password', async () => {
     const admin = makeAdmin({
       individualRegistration: Mask.takeOffFromText(
@@ -150,6 +195,25 @@ describe('Authenticate use case', () => {
     const result = await sut.execute({
       individualRegistration: deliveryMan.individualRegistration.value,
       password: 'inecistent-delivery-man-password',
+    })
+
+    expect(result.isLeft()).toEqual(true)
+    expect(result.value).toBeInstanceOf(NotAuthorizedError)
+  })
+
+  it('should not be able to authenticate a recipient with a wrong password', async () => {
+    const recipient = makeRecipient({
+      individualRegistration: Mask.takeOffFromText(
+        USER_INDIVIDUAL_REGISTRATION,
+      ),
+      password,
+    })
+
+    inMemoryRecipientsRepository.create(recipient)
+
+    const result = await sut.execute({
+      individualRegistration: recipient.individualRegistration.value,
+      password: 'inecistent-recipient-password',
     })
 
     expect(result.isLeft()).toEqual(true)

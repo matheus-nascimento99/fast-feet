@@ -39,13 +39,7 @@ describe('Create recipient (e2e)', () => {
         email: faker.internet.email(),
         individualRegistration: faker.number.int().toString(),
         cellphone: faker.phone.number(),
-        postalCode: faker.location.zipCode(),
-        street: faker.location.streetAddress(),
-        streetNumber: faker.number.int(1000),
-        complement: faker.lorem.sentence(),
-        neighborhood: faker.location.county(),
-        city: faker.location.city(),
-        state: faker.location.state(),
+        password: faker.internet.password(),
       })
     expect(createRecipient.statusCode).toEqual(201)
   })

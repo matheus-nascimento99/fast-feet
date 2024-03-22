@@ -79,8 +79,8 @@ export class PrismaOrdersRepository implements OrdersRepository {
   }: PaginationParams): Promise<OrderWithDetails[]> {
     const orders = await this.prisma.order.findMany({
       include: {
-        deliveryMan: true,
-        recipient: true,
+        deliveryMen: true,
+        recipients: true,
       },
       skip: (page - 1) * limit,
       take: limit,

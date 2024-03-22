@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker'
 import { Injectable } from '@nestjs/common'
+import { hash } from 'bcryptjs'
+import { DEFAULT_PASSWORD } from 'test/utils/default-password'
 
 import { UniqueEntityId } from '@/core/value-objects/unique-entity-id'
 import {
@@ -22,13 +24,7 @@ export const makeRecipient = (
       ),
       email: faker.internet.email(),
       cellphone: Mask.takeOffFromText(faker.phone.number()),
-      postalCode: Mask.takeOffFromText(faker.location.zipCode()),
-      street: faker.location.streetAddress(),
-      streetNumber: faker.number.int(1000),
-      complement: faker.lorem.sentence(10),
-      neighborhood: faker.location.county(),
-      city: faker.location.city(),
-      state: faker.location.state(),
+      password: faker.internet.password(),
       ...override,
     },
     id,
@@ -42,10 +38,13 @@ export class RecipientFactory {
   constructor(private prisma: PrismaService) {}
 
   async makePrismaRecipient(override: Partial<RecipientProps> = {}) {
-    const recipient = makeRecipient(override)
+    const recipient = makeRecipient({
+      ...override,
+      password: await hash(override.password ?? DEFAULT_PASSWORD, 8),
+    })
     const data = PrismaRecipientsMapper.toPrisma(recipient)
 
-    await this.prisma.recipient.create({
+    await this.prisma.user.create({
       data,
     })
 

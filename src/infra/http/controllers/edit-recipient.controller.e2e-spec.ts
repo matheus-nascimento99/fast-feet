@@ -58,7 +58,7 @@ describe('Edit recipient (e2e)', () => {
       .set('Authorization', `Bearer ${token}`)
       .send(newRecipient)
 
-    const recipientEdited = await prisma.recipient.findUnique({
+    const recipientEdited = await prisma.user.findUnique({
       where: {
         id: recipient.id.toString(),
       },

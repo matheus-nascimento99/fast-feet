@@ -1,5 +1,6 @@
-import { Entity } from '@/core/entities/entity'
+import { AggregateRoot } from '@/core/entities/aggregate-root'
 
+import { AddressList } from './address-list'
 import { Mask } from './value-objects/mask'
 
 export interface UserProps {
@@ -8,11 +9,14 @@ export interface UserProps {
   name: string
   individualRegistration: Mask
   cellphone: Mask
+  adresses: AddressList
   createdAt: Date
   updatedAt?: Date | null
 }
 
-export abstract class User<Props extends UserProps> extends Entity<Props> {
+export abstract class User<
+  Props extends UserProps,
+> extends AggregateRoot<Props> {
   get name() {
     return this.props.name
   }
@@ -55,6 +59,15 @@ export abstract class User<Props extends UserProps> extends Entity<Props> {
 
   set cellphone(value: Mask) {
     this.props.cellphone = value
+    this.touch()
+  }
+
+  get adresses() {
+    return this.props.adresses
+  }
+
+  set adresses(value: AddressList) {
+    this.props.adresses = value
     this.touch()
   }
 

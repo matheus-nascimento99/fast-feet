@@ -13,13 +13,6 @@ interface EditRecipientUseCaseRequest {
   individualRegistration: string
   email: string
   cellphone: string
-  postalCode: string
-  street: string
-  streetNumber: number
-  complement?: string | null
-  neighborhood: string
-  city: string
-  state: string
 }
 
 type EditRecipientUseCaseResponse = Either<unknown, ResourceNotFoundError>
@@ -31,7 +24,6 @@ export class EditRecipientUseCase {
     recipientId,
     individualRegistration,
     cellphone,
-    postalCode,
     ...rest
   }: EditRecipientUseCaseRequest): Promise<EditRecipientUseCaseResponse> {
     const recipient = await this.recipientsRepository.findById(recipientId)
@@ -51,7 +43,6 @@ export class EditRecipientUseCase {
       individualRegistration,
     )
     recipient.cellphone = Mask.takeOffFromText(cellphone)
-    recipient.postalCode = Mask.takeOffFromText(postalCode)
 
     await this.recipientsRepository.save(recipient.id, recipient)
 

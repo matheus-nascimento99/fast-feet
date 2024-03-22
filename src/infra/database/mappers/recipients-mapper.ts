@@ -1,4 +1,4 @@
-import { Prisma, Recipient as PrismaRecipient } from '@prisma/client'
+import { Prisma, User as PrismaRecipient } from '@prisma/client'
 
 import { UniqueEntityId } from '@/core/value-objects/unique-entity-id'
 import { Recipient } from '@/domain/orders-control/enterprise/entities/recipient'
@@ -12,13 +12,7 @@ export class PrismaRecipientsMapper {
         email: raw.email,
         individualRegistration: Mask.create(raw.individualRegistration),
         cellphone: Mask.create(raw.cellphone),
-        postalCode: Mask.create(raw.postalCode),
-        street: raw.street,
-        streetNumber: raw.streetNumber,
-        complement: raw.complement,
-        neighborhood: raw.neighborhood,
-        city: raw.city,
-        state: raw.state,
+        password: raw.password,
         createdAt: raw.createdAt,
         updatedAt: raw.updatedAt,
       },
@@ -26,20 +20,15 @@ export class PrismaRecipientsMapper {
     )
   }
 
-  static toPrisma(recipient: Recipient): Prisma.RecipientUncheckedCreateInput {
+  static toPrisma(recipient: Recipient): Prisma.UserUncheckedCreateInput {
     return {
       id: recipient.id.toString(),
       name: recipient.name,
       email: recipient.email,
       individualRegistration: recipient.individualRegistration.value,
       cellphone: recipient.cellphone.value,
-      postalCode: recipient.postalCode.value,
-      street: recipient.street,
-      streetNumber: recipient.streetNumber,
-      complement: recipient.complement ? recipient.complement : null,
-      neighborhood: recipient.neighborhood,
-      city: recipient.city,
-      state: recipient.state,
+      password: recipient.password,
+      role: 'RECIPIENT',
       createdAt: recipient.createdAt,
       updatedAt: recipient.updatedAt ? recipient.updatedAt : null,
     }

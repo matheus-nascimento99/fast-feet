@@ -2,17 +2,14 @@ import { Injectable } from '@nestjs/common'
 
 import { Either, left, right } from '@/core/either'
 import { NotAuthorizedError } from '@/core/errors/not-authorized-error'
+import { AuthRepositories, AuthResponse } from '@/core/types/auth'
 
-import { Admin } from '../../enterprise/entities/admin'
-import { DeliveryMan } from '../../enterprise/entities/delivery-man'
 import { Mask } from '../../enterprise/entities/value-objects/mask'
 import { Cryptographer } from '../cryptography/cryptographer'
 import { HashComparer } from '../hash/hash-comparer'
 import { AdminsRepository } from '../repositories/admin'
 import { DeliveryMenRepository } from '../repositories/delivery-man'
-
-type AuthenticateRepositories = 'adminsRepository' | 'deliveryMenRepository'
-type UserResponse = Admin | DeliveryMan
+import { RecipientsRepository } from '../repositories/recipient'
 
 interface AuthenticateUseCaseRequest {
   individualRegistration: string
@@ -30,6 +27,7 @@ export class AuthenticateUseCase {
   constructor(
     private adminsRepository: AdminsRepository,
     private deliveryMenRepository: DeliveryMenRepository,
+    private recipientsRepository: RecipientsRepository,
     private hashComparer: HashComparer,
     private cryptographer: Cryptographer,
   ) {}
@@ -38,7 +36,7 @@ export class AuthenticateUseCase {
     individualRegistration,
     password,
   }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
-    let user: UserResponse | null = null
+    let user: AuthResponse | null = null
 
     const { hashComparer, cryptographer, ...rest } = this //eslint-disable-line
 
@@ -48,7 +46,7 @@ export class AuthenticateUseCase {
 
     for (const repository of repositories) {
       user = await this[
-        repository as AuthenticateRepositories
+        repository as AuthRepositories
       ].findByIndividualRegistration(
         Mask.takeOffFromText(individualRegistration).value,
       )

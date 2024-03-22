@@ -10,7 +10,7 @@ services:
       - POSTGRES_PASSWORD=docker
       - POSTGRES_DB=fast_feet
     volumes:
-      - fast_feet_pg_data:/var/lib/postgresql/data
+      - ./fast_feet_pg_data:/var/lib/postgresql/data
 
 volumes:
   fast_feet_pg_data:

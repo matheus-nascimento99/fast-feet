@@ -8,7 +8,7 @@ import { Env } from '@/infra/env/env'
 
 const userPayloadSchema = z.object({
   sub: z.string().uuid(),
-  role: z.enum(['ADMIN', 'DELIVERYMAN']),
+  role: z.enum(['ADMIN', 'DELIVERYMAN', 'RECIPIENT']),
 })
 
 export type UserPayload = z.infer<typeof userPayloadSchema>

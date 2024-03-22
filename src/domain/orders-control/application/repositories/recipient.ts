@@ -7,6 +7,13 @@ export abstract class RecipientsRepository {
   abstract create(data: Recipient): Promise<void>
   abstract findMany(paginationParams: PaginationParams): Promise<Recipient[]>
   abstract findById(recipientId: string): Promise<Recipient | null>
+  abstract findByIndividualRegistration(
+    individualRegistration: string,
+  ): Promise<Recipient | null>
+
+  abstract findByEmail(email: string): Promise<Recipient | null>
+  abstract findByCellphone(cellphone: string): Promise<Recipient | null>
+
   abstract save(recipientId: UniqueEntityId, data: Recipient): Promise<void>
   abstract delete(recipientId: UniqueEntityId): Promise<void>
 }
