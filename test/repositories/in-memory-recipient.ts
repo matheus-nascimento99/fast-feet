@@ -3,11 +3,17 @@ import { UniqueEntityId } from '@/core/value-objects/unique-entity-id'
 import { RecipientsRepository } from '@/domain/orders-control/application/repositories/recipient'
 import { Recipient } from '@/domain/orders-control/enterprise/entities/recipient'
 
+import { InMemoryAdressesRepository } from './in-memory-address'
+
 export class InMemoryRecipientsRepository implements RecipientsRepository {
   public items: Recipient[] = []
 
+  constructor(private inMemoryAdressesRepository: InMemoryAdressesRepository) {}
+
   async create(data: Recipient) {
     this.items.push(data)
+
+    this.inMemoryAdressesRepository.createMany(data.adresses.getItems())
   }
 
   async findMany({ page, limit }: PaginationParams) {
@@ -67,6 +73,9 @@ export class InMemoryRecipientsRepository implements RecipientsRepository {
       (item) => item.id === recipientId,
     )
     this.items[recipientIndex] = data
+
+    this.inMemoryAdressesRepository.createMany(data.adresses.getNewItems())
+    this.inMemoryAdressesRepository.deleteMany(data.adresses.getRemovedItems())
   }
 
   async delete(recipientId: UniqueEntityId) {
@@ -74,5 +83,7 @@ export class InMemoryRecipientsRepository implements RecipientsRepository {
       (item) => item.id === recipientId,
     )
     this.items.splice(recipientIndex, 1)
+
+    this.inMemoryAdressesRepository.deleteManyByRecipientId(recipientId)
   }
 }

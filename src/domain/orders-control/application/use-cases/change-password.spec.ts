@@ -2,6 +2,7 @@ import { makeAdmin } from 'test/factories/make-admin'
 import { makeDeliveryMan } from 'test/factories/make-delivery-man'
 import { makeRecipient } from 'test/factories/make-recipient'
 import { FakeHasher } from 'test/hash/fake-hasher'
+import { InMemoryAdressesRepository } from 'test/repositories/in-memory-address'
 import { InMemoryAdminsRepository } from 'test/repositories/in-memory-admin'
 import { InMemoryDeliveryMenRepository } from 'test/repositories/in-memory-delivery-man'
 import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipient'
@@ -13,6 +14,7 @@ import { ChangePasswordUseCase } from './change-password'
 let inMemoryDeliveryMenRepository: InMemoryDeliveryMenRepository
 let inMemoryAdminsRepository: InMemoryAdminsRepository
 let inMemoryRecipientsRepository: InMemoryRecipientsRepository
+let inMemoryAdressesRepository: InMemoryAdressesRepository
 let fakeHashCreator: FakeHasher
 let sut: ChangePasswordUseCase
 
@@ -21,7 +23,10 @@ const USER_NEW_PASSWORD = 'test'
 describe('Change password use case', () => {
   beforeEach(() => {
     inMemoryAdminsRepository = new InMemoryAdminsRepository()
-    inMemoryRecipientsRepository = new InMemoryRecipientsRepository()
+    inMemoryAdressesRepository = new InMemoryAdressesRepository()
+    inMemoryRecipientsRepository = new InMemoryRecipientsRepository(
+      inMemoryAdressesRepository,
+    )
     inMemoryDeliveryMenRepository = new InMemoryDeliveryMenRepository()
     fakeHashCreator = new FakeHasher()
 

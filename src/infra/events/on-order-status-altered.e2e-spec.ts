@@ -55,8 +55,8 @@ describe('On order status  (e2e)', () => {
     })
 
     const order = await orderFactory.makePrismaOrder({
-      deliveryManId: deliveryMan.id.toString(),
-      recipientId: recipient.id.toString(),
+      deliveryManId: deliveryMan.id,
+      recipientId: recipient.id,
     })
 
     await request(app.getHttpServer())

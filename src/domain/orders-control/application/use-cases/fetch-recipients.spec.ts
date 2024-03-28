@@ -1,14 +1,19 @@
 import { makeRecipient } from 'test/factories/make-recipient'
+import { InMemoryAdressesRepository } from 'test/repositories/in-memory-address'
 import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipient'
 
 import { FetchRecipientsUseCase } from './fetch-recipients'
 
 let inMemoryRecipientsRepository: InMemoryRecipientsRepository
+let inMemoryAdressesRepository: InMemoryAdressesRepository
 let sut: FetchRecipientsUseCase
 
 describe('Fetch recipients use case', () => {
   beforeEach(() => {
-    inMemoryRecipientsRepository = new InMemoryRecipientsRepository()
+    inMemoryAdressesRepository = new InMemoryAdressesRepository()
+    inMemoryRecipientsRepository = new InMemoryRecipientsRepository(
+      inMemoryAdressesRepository,
+    )
     sut = new FetchRecipientsUseCase(inMemoryRecipientsRepository)
   })
 

@@ -1,7 +1,11 @@
 import { faker } from '@faker-js/faker'
+import { makeAddress } from 'test/factories/make-address'
 import { makeRecipient } from 'test/factories/make-recipient'
 import { FakeHasher } from 'test/hash/fake-hasher'
+import { InMemoryAdressesRepository } from 'test/repositories/in-memory-address'
 import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipient'
+
+import { UniqueEntityId } from '@/core/value-objects/unique-entity-id'
 
 import { CreateRecipientUseCase } from './create-recipient'
 import { UserWithSameCellphoneError } from './errors/user-with-same-cellphone'
@@ -10,26 +14,50 @@ import { UserWithSameIndividualRegistrationError } from './errors/user-with-same
 
 let sut: CreateRecipientUseCase
 let inMemoryRecipientsRepository: InMemoryRecipientsRepository
+let inMemoryAdressesRepository: InMemoryAdressesRepository
 let fakeHasher: FakeHasher
 
 describe('Create recipient use case', () => {
   beforeEach(() => {
-    inMemoryRecipientsRepository = new InMemoryRecipientsRepository()
+    inMemoryAdressesRepository = new InMemoryAdressesRepository()
+    inMemoryRecipientsRepository = new InMemoryRecipientsRepository(
+      inMemoryAdressesRepository,
+    )
     fakeHasher = new FakeHasher()
-    sut = new CreateRecipientUseCase(inMemoryRecipientsRepository, fakeHasher)
+    sut = new CreateRecipientUseCase(
+      inMemoryRecipientsRepository,
+      inMemoryAdressesRepository,
+      fakeHasher,
+    )
   })
 
   it('should be able to create a recipient', async () => {
+    const adresses = Array.from({ length: 2 }).map(() => {
+      const address = makeAddress()
+      inMemoryAdressesRepository.create(address)
+
+      return address.id.toString()
+    })
+
     const { value } = await sut.execute({
       name: 'Matheus',
       individualRegistration: '456.143.238-80',
       cellphone: '+551195119-5312',
       email: 'mnsergio59@gmail.com',
       password: await fakeHasher.create(faker.internet.password()),
+      adresses,
     })
 
     expect(value).toEqual({
-      item: expect.objectContaining({ name: expect.any(String) }),
+      item: expect.objectContaining({
+        name: expect.any(String),
+        adresses: expect.objectContaining({
+          currentItems: expect.arrayContaining([
+            expect.objectContaining({ id: new UniqueEntityId(adresses[0]) }),
+            expect.objectContaining({ id: new UniqueEntityId(adresses[1]) }),
+          ]),
+        }),
+      }),
     })
   })
 
@@ -43,6 +71,7 @@ describe('Create recipient use case', () => {
       cellphone: '+551195119-5312',
       email: 'mnsergio59@gmail.com',
       password: 'matheus123',
+      adresses: [],
     })
 
     expect(result.isLeft()).toEqual(true)
@@ -59,6 +88,7 @@ describe('Create recipient use case', () => {
       cellphone: recipient.cellphone.value,
       email: 'mnsergio59@gmail.com',
       password: 'matheus123',
+      adresses: [],
     })
 
     expect(result.isLeft()).toEqual(true)
@@ -75,6 +105,7 @@ describe('Create recipient use case', () => {
       cellphone: '+551195119-5312',
       email: recipient.email,
       password: 'matheus123',
+      adresses: [],
     })
 
     expect(result.isLeft()).toEqual(true)
@@ -88,6 +119,7 @@ describe('Create recipient use case', () => {
       cellphone: '+551195119-5312',
       email: 'mnsergio59@gmail.com',
       password: 'matheus123',
+      adresses: [],
     })
 
     expect(result.isRight()).toEqual(true)

@@ -18,7 +18,7 @@ export abstract class Entity<Props> {
       return true
     }
 
-    if (entity.id === this.id) {
+    if (entity.id.toString() === this.id.toString()) {
       return true
     }
 

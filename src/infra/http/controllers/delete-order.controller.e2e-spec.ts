@@ -51,8 +51,8 @@ describe('Delete order (e2e)', () => {
     const recipient = await recipientFactory.makePrismaRecipient()
 
     const order = await orderFactory.makePrismaOrder({
-      deliveryManId: deliveryMan.id.toString(),
-      recipientId: recipient.id.toString(),
+      deliveryManId: deliveryMan.id,
+      recipientId: recipient.id,
     })
 
     const result = await request(app.getHttpServer())

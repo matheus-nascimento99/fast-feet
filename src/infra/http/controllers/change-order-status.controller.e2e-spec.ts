@@ -53,8 +53,8 @@ describe('Change order status (e2e)', () => {
     })
 
     const order = await orderFactory.makePrismaOrder({
-      deliveryManId: deliveryMan.id.toString(),
-      recipientId: recipient.id.toString(),
+      deliveryManId: deliveryMan.id,
+      recipientId: recipient.id,
     })
 
     const result = await request(app.getHttpServer())
@@ -83,8 +83,8 @@ describe('Change order status (e2e)', () => {
     })
 
     const order = await orderFactory.makePrismaOrder({
-      deliveryManId: deliveryMan.id.toString(),
-      recipientId: recipient.id.toString(),
+      deliveryManId: deliveryMan.id,
+      recipientId: recipient.id,
     })
 
     const result = await request(app.getHttpServer())
@@ -113,8 +113,8 @@ describe('Change order status (e2e)', () => {
     })
 
     const order = await orderFactory.makePrismaOrder({
-      deliveryManId: deliveryMan.id.toString(),
-      recipientId: recipient.id.toString(),
+      deliveryManId: deliveryMan.id,
+      recipientId: recipient.id,
       attachment: Attachment.create({ link: faker.image.url() }),
     })
 

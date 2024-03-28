@@ -44,8 +44,8 @@ describe('Fetch orders by delivery man (e2e)', () => {
 
     for (let index = 0; index < 11; index++) {
       await orderFactory.makePrismaOrder({
-        deliveryManId: deliveryMan.id.toString(),
-        recipientId: recipient.id.toString(),
+        deliveryManId: deliveryMan.id,
+        recipientId: recipient.id,
       })
     }
 
@@ -69,8 +69,8 @@ describe('Fetch orders by delivery man (e2e)', () => {
 
     for (let index = 0; index < 11; index++) {
       await orderFactory.makePrismaOrder({
-        deliveryManId: deliveryMan.id.toString(),
-        recipientId: recipient.id.toString(),
+        deliveryManId: deliveryMan.id,
+        recipientId: recipient.id,
       })
     }
 

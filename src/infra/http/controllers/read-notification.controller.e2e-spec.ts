@@ -41,7 +41,7 @@ describe('Read notification (e2e)', () => {
     })
 
     const notification = await notificationFactory.makePrismaNotification({
-      recipientId: recipient.id.toString(),
+      recipientId: recipient.id,
     })
 
     const result = await request(app.getHttpServer())

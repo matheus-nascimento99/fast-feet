@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker'
 import { makeDeliveryMan } from 'test/factories/make-delivery-man'
 import { makeRecipient } from 'test/factories/make-recipient'
+import { InMemoryAdressesRepository } from 'test/repositories/in-memory-address'
 import { InMemoryDeliveryMenRepository } from 'test/repositories/in-memory-delivery-man'
 import { InMemoryOrdersRepository } from 'test/repositories/in-memory-order'
 import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipient'
@@ -12,12 +13,16 @@ import { CreateOrderUseCase } from './create-order'
 
 let inMemoryOrdersRepository: InMemoryOrdersRepository
 let inMemoryRecipientsRepository: InMemoryRecipientsRepository
+let inMemoryAdressesRepository: InMemoryAdressesRepository
 let inMemoryDeliveryMenRepository: InMemoryDeliveryMenRepository
 let sut: CreateOrderUseCase
 
 describe('Create order use case', () => {
   beforeEach(() => {
-    inMemoryRecipientsRepository = new InMemoryRecipientsRepository()
+    inMemoryAdressesRepository = new InMemoryAdressesRepository()
+    inMemoryRecipientsRepository = new InMemoryRecipientsRepository(
+      inMemoryAdressesRepository,
+    )
     inMemoryDeliveryMenRepository = new InMemoryDeliveryMenRepository()
     inMemoryOrdersRepository = new InMemoryOrdersRepository(
       inMemoryRecipientsRepository,

@@ -13,6 +13,7 @@ const createRecipientSchema = z.object({
   cellphone: z.string().min(1),
   email: z.string().email().min(1),
   password: z.string().min(1),
+  adresses: z.string().array().min(1),
 })
 
 type CreateRecipientSchema = z.infer<typeof createRecipientSchema>

@@ -4,6 +4,6 @@ import { Address } from './address'
 
 export class AddressList extends WatchedList<Address> {
   compareItems(a: Address, b: Address): boolean {
-    return a.id.equals(b.id)
+    return a.equals(b)
   }
 }

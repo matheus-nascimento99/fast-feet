@@ -21,12 +21,7 @@ const editRecipientSchema = z.object({
   cellphone: z.string().min(1),
   email: z.string().email().min(1),
   postalCode: z.string().min(1),
-  street: z.string().min(1),
-  streetNumber: z.coerce.number(),
-  complement: z.string().optional().nullable(),
-  neighborhood: z.string().min(1),
-  city: z.string().min(1),
-  state: z.string().min(1),
+  adresses: z.string().array().min(1),
 })
 
 type EditRecipientSchema = z.infer<typeof editRecipientSchema>

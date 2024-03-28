@@ -52,8 +52,8 @@ describe('Edit order (e2e)', () => {
     const deliveryMan = await deliveryManFactory.makePrismaDeliveryMan()
 
     const order = await orderFactory.makePrismaOrder({
-      deliveryManId: deliveryMan.id.toString(),
-      recipientId: recipient.id.toString(),
+      deliveryManId: deliveryMan.id,
+      recipientId: recipient.id,
     })
 
     const newRecipient = await recipientFactory.makePrismaRecipient()

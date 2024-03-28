@@ -45,8 +45,8 @@ describe('Fetch orders near by delivery man (e2e)', () => {
 
     for (let index = 0; index < 11; index++) {
       await orderFactory.makePrismaOrder({
-        deliveryManId: deliveryMan.id.toString(),
-        recipientId: recipient.id.toString(),
+        deliveryManId: deliveryMan.id,
+        recipientId: recipient.id,
         coordinates: {
           lat: index <= 9 ? -23.6514773 : faker.location.latitude(),
           lng: index <= 9 ? -46.7195083 : faker.location.longitude(),
@@ -76,8 +76,8 @@ describe('Fetch orders near by delivery man (e2e)', () => {
 
     for (let index = 0; index < 11; index++) {
       await orderFactory.makePrismaOrder({
-        deliveryManId: deliveryMan.id.toString(),
-        recipientId: recipient.id.toString(),
+        deliveryManId: deliveryMan.id,
+        recipientId: recipient.id,
         coordinates: {
           lat: index <= 9 ? -23.6514773 : faker.location.latitude(),
           lng: index <= 9 ? -46.7195083 : faker.location.longitude(),

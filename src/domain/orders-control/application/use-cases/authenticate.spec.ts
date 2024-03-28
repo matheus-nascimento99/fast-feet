@@ -3,6 +3,7 @@ import { makeAdmin } from 'test/factories/make-admin'
 import { makeDeliveryMan } from 'test/factories/make-delivery-man'
 import { makeRecipient } from 'test/factories/make-recipient'
 import { FakeHasher } from 'test/hash/fake-hasher'
+import { InMemoryAdressesRepository } from 'test/repositories/in-memory-address'
 import { InMemoryAdminsRepository } from 'test/repositories/in-memory-admin'
 import { InMemoryDeliveryMenRepository } from 'test/repositories/in-memory-delivery-man'
 import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipient'
@@ -15,6 +16,7 @@ import { AuthenticateUseCase } from './authenticate'
 let inMemoryDeliveryMenRepository: InMemoryDeliveryMenRepository
 let inMemoryAdminsRepository: InMemoryAdminsRepository
 let inMemoryRecipientsRepository: InMemoryRecipientsRepository
+let inMemoryAdressesRepository: InMemoryAdressesRepository
 let fakeHasher: FakeHasher
 let fakeCryptographer: FakeCryptographer
 let sut: AuthenticateUseCase
@@ -28,7 +30,10 @@ describe('Authenticate use case', () => {
   beforeEach(async () => {
     inMemoryAdminsRepository = new InMemoryAdminsRepository()
     inMemoryDeliveryMenRepository = new InMemoryDeliveryMenRepository()
-    inMemoryRecipientsRepository = new InMemoryRecipientsRepository()
+    inMemoryAdressesRepository = new InMemoryAdressesRepository()
+    inMemoryRecipientsRepository = new InMemoryRecipientsRepository(
+      inMemoryAdressesRepository,
+    )
     fakeHasher = new FakeHasher()
     fakeCryptographer = new FakeCryptographer()
 

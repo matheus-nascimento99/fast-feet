@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common'
 
 import { Either, left, right } from '@/core/either'
+import { UniqueEntityId } from '@/core/value-objects/unique-entity-id'
 import { Mask } from '@/domain/orders-control/enterprise/entities/value-objects/mask'
 
 import { Recipient } from '../../enterprise/entities/recipient'
 import { HashCreator } from '../hash/hash-creator'
+import { AdressesRepository } from '../repositories/address'
 import { RecipientsRepository } from '../repositories/recipient'
 import { UserWithSameCellphoneError } from './errors/user-with-same-cellphone'
 import { UserWithSameEmailError } from './errors/user-with-same-email'
@@ -16,6 +18,7 @@ interface CreateRecipientUseCaseRequest {
   cellphone: string
   email: string
   password: string
+  adresses: string[]
 }
 
 type CreateRecipientUseCaseResponse = Either<
@@ -30,6 +33,7 @@ type CreateRecipientUseCaseResponse = Either<
 export class CreateRecipientUseCase {
   constructor(
     private recipientsRepository: RecipientsRepository,
+    private adressesRepository: AdressesRepository,
     private hashCreator: HashCreator,
   ) {}
 
@@ -39,22 +43,22 @@ export class CreateRecipientUseCase {
     cellphone,
     email,
     password,
+    adresses,
   }: CreateRecipientUseCaseRequest): Promise<CreateRecipientUseCaseResponse> {
-    const deliveryManByEmail =
-      await this.recipientsRepository.findByEmail(email)
+    const recipientByEmail = await this.recipientsRepository.findByEmail(email)
 
-    if (deliveryManByEmail) {
+    if (recipientByEmail) {
       return left(
         new UserWithSameEmailError('Already exists an user with same email.'),
       )
     }
 
-    const deliveryManByIndividualRegistration =
+    const recipientByIndividualRegistration =
       await this.recipientsRepository.findByIndividualRegistration(
         individualRegistration,
       )
 
-    if (deliveryManByIndividualRegistration) {
+    if (recipientByIndividualRegistration) {
       return left(
         new UserWithSameIndividualRegistrationError(
           'Already exists an user with same individual registration.',
@@ -62,10 +66,10 @@ export class CreateRecipientUseCase {
       )
     }
 
-    const deliveryManByCellphone =
+    const recipientByCellphone =
       await this.recipientsRepository.findByCellphone(cellphone)
 
-    if (deliveryManByCellphone) {
+    if (recipientByCellphone) {
       return left(
         new UserWithSameCellphoneError(
           'Already exists an user with same cellphone.',
@@ -82,6 +86,17 @@ export class CreateRecipientUseCase {
       email,
       password: passwordHashed,
     })
+
+    for (const addressId of adresses) {
+      const address = await this.adressesRepository.findById(
+        new UniqueEntityId(addressId),
+      )
+
+      if (address) {
+        address.recipientId = recipient.id
+        recipient.adresses.add(address)
+      }
+    }
 
     await this.recipientsRepository.create(recipient)
 

@@ -5,7 +5,7 @@ import { UniqueEntityId } from '@/core/value-objects/unique-entity-id'
 import { Mask } from './value-objects/mask'
 
 export type AddressProps = {
-  recipientId: UniqueEntityId
+  recipientId?: UniqueEntityId | null
   postalCode: Mask
   street: string
   streetNumber: number
@@ -21,7 +21,7 @@ export class Address extends Entity<AddressProps> {
     return this.props.recipientId
   }
 
-  set recipientId(value: UniqueEntityId) {
+  set recipientId(value: UniqueEntityId | null | undefined) {
     this.props.recipientId = value
   }
 

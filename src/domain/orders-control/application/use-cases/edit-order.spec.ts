@@ -1,6 +1,7 @@
 import { makeDeliveryMan } from 'test/factories/make-delivery-man'
 import { makeOrder } from 'test/factories/make-order'
 import { makeRecipient } from 'test/factories/make-recipient'
+import { InMemoryAdressesRepository } from 'test/repositories/in-memory-address'
 import { InMemoryDeliveryMenRepository } from 'test/repositories/in-memory-delivery-man'
 import { InMemoryOrdersRepository } from 'test/repositories/in-memory-order'
 import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipient'
@@ -13,12 +14,16 @@ import { EditOrderUseCase } from './edit-order'
 let inMemoryOrdersRepository: InMemoryOrdersRepository
 let inMemoryDeliveryMenRepository: InMemoryDeliveryMenRepository
 let inMemoryRecipientsRepository: InMemoryRecipientsRepository
+let inMemoryAdressesRepository: InMemoryAdressesRepository
 let sut: EditOrderUseCase
 
 describe('Edit order use case', () => {
   beforeEach(() => {
     inMemoryDeliveryMenRepository = new InMemoryDeliveryMenRepository()
-    inMemoryRecipientsRepository = new InMemoryRecipientsRepository()
+    inMemoryAdressesRepository = new InMemoryAdressesRepository()
+    inMemoryRecipientsRepository = new InMemoryRecipientsRepository(
+      inMemoryAdressesRepository,
+    )
     inMemoryOrdersRepository = new InMemoryOrdersRepository(
       inMemoryRecipientsRepository,
       inMemoryDeliveryMenRepository,
