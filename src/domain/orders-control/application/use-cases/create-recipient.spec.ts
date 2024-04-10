@@ -8,6 +8,8 @@ import { InMemoryRecipientsRepository } from 'test/repositories/in-memory-recipi
 import { UniqueEntityId } from '@/core/value-objects/unique-entity-id'
 
 import { CreateRecipientUseCase } from './create-recipient'
+import { InvalidAddressAmountPerRecipientError } from './errors/invalid-address-amount-per-recipient'
+import { RecipientWithNoOneAddressError } from './errors/recipient-with-no-one-address'
 import { UserWithSameCellphoneError } from './errors/user-with-same-cellphone'
 import { UserWithSameEmailError } from './errors/user-with-same-email'
 import { UserWithSameIndividualRegistrationError } from './errors/user-with-same-individual-registration'
@@ -119,12 +121,47 @@ describe('Create recipient use case', () => {
       cellphone: '+551195119-5312',
       email: 'mnsergio59@gmail.com',
       password: 'matheus123',
-      adresses: [],
+      adresses: [faker.string.uuid()],
     })
 
     expect(result.isRight()).toEqual(true)
     expect(inMemoryRecipientsRepository.items[0].password).toEqual(
       'matheus123-hashed',
     )
+  })
+
+  it('should not be able to create a recipient with no one address', async () => {
+    const recipient = makeRecipient()
+    await inMemoryRecipientsRepository.create(recipient)
+
+    const result = await sut.execute({
+      name: 'Matheus',
+      individualRegistration: '456.143.238-80',
+      cellphone: '+551195119-5312',
+      email: 'mnsergio59@mail.com',
+      password: 'matheus123',
+      adresses: [],
+    })
+
+    expect(result.isLeft()).toEqual(true)
+    expect(result.value).toBeInstanceOf(RecipientWithNoOneAddressError)
+  })
+
+  it('should not be able to create a recipient with more than ten adresses', async () => {
+    const adresses = Array.from({ length: 11 }).map(() => {
+      return faker.string.uuid()
+    })
+
+    const result = await sut.execute({
+      name: 'Matheus',
+      individualRegistration: '456.143.238-80',
+      cellphone: '+551195119-5312',
+      email: 'mnsergio59@mail.com',
+      password: 'matheus123',
+      adresses,
+    })
+
+    expect(result.isLeft()).toEqual(true)
+    expect(result.value).toBeInstanceOf(InvalidAddressAmountPerRecipientError)
   })
 })

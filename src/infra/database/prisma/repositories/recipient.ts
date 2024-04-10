@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 
 import { PaginationParams } from '@/core/repositories/pagination-params'
 import { UniqueEntityId } from '@/core/value-objects/unique-entity-id'
+import { AdressesRepository } from '@/domain/orders-control/application/repositories/address'
 import { RecipientsRepository } from '@/domain/orders-control/application/repositories/recipient'
 import { Recipient } from '@/domain/orders-control/enterprise/entities/recipient'
 
@@ -10,7 +11,10 @@ import { PrismaService } from '../prisma.service'
 
 @Injectable()
 export class PrismaRecipientsRepository implements RecipientsRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private adressesRepository: AdressesRepository,
+  ) {}
 
   async create(recipient: Recipient): Promise<void> {
     const data = PrismaRecipientsMapper.toPrisma(recipient)
@@ -18,6 +22,8 @@ export class PrismaRecipientsRepository implements RecipientsRepository {
     await this.prisma.user.create({
       data,
     })
+
+    await this.adressesRepository.createMany(recipient.adresses.getItems())
   }
 
   async findById(recipientId: string): Promise<Recipient | null> {
@@ -101,9 +107,16 @@ export class PrismaRecipientsRepository implements RecipientsRepository {
       },
       data,
     })
+
+    await this.adressesRepository.createMany(recipient.adresses.getNewItems())
+    await this.adressesRepository.deleteMany(
+      recipient.adresses.getRemovedItems(),
+    )
   }
 
   async delete(recipientId: UniqueEntityId): Promise<void> {
+    await this.adressesRepository.deleteManyByRecipientId(recipientId)
+
     await this.prisma.user.delete({
       where: {
         id: recipientId.toString(),

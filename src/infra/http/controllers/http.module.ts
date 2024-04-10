@@ -4,13 +4,16 @@ import { ReadNotificationUseCase } from '@/domain/notification/application/use-c
 import { AuthenticateUseCase } from '@/domain/orders-control/application/use-cases/authenticate'
 import { ChangeOrderStatusUseCase } from '@/domain/orders-control/application/use-cases/change-order-status'
 import { ChangePasswordUseCase } from '@/domain/orders-control/application/use-cases/change-password'
+import { CreateAddressUseCase } from '@/domain/orders-control/application/use-cases/create-address'
 import { CreateAdminUseCase } from '@/domain/orders-control/application/use-cases/create-admin'
 import { CreateDeliveryManUseCase } from '@/domain/orders-control/application/use-cases/create-delivery-man'
 import { CreateOrderUseCase } from '@/domain/orders-control/application/use-cases/create-order'
 import { CreateRecipientUseCase } from '@/domain/orders-control/application/use-cases/create-recipient'
+import { DeleteAddressUseCase } from '@/domain/orders-control/application/use-cases/delete-address'
 import { DeleteDeliveryManUseCase } from '@/domain/orders-control/application/use-cases/delete-delivery-man'
 import { DeleteOrderUseCase } from '@/domain/orders-control/application/use-cases/delete-order'
 import { DeleteRecipientUseCase } from '@/domain/orders-control/application/use-cases/delete-recipient'
+import { EditAddressUseCase } from '@/domain/orders-control/application/use-cases/edit-address'
 import { EditDeliveryManUseCase } from '@/domain/orders-control/application/use-cases/edit-delivery-man'
 import { EditOrderUseCase } from '@/domain/orders-control/application/use-cases/edit-order'
 import { EditRecipientUseCase } from '@/domain/orders-control/application/use-cases/edit-recipient'
@@ -28,12 +31,15 @@ import { StorageModule } from '@/infra/storage/storage.module'
 import { AuthenticateController } from './authenticate.controller'
 import { ChangeOrderStatusController } from './change-order-status.controller'
 import { ChangePasswordController } from './change-password.controller'
+import { CreateAddressController } from './create-address.controller'
 import { CreateOrderController } from './create-order.controller'
 import { CreateRecipientController } from './create-recipient.controller'
 import { CreateUserController } from './create-user.controller'
+import { DeleteAddressController } from './delete-address.controller'
 import { DeleteDeliveryManController } from './delete-delivery-man.controller'
 import { DeleteOrderController } from './delete-order.controller'
 import { DeleteRecipientController } from './delete-recipient.controller'
+import { EditAddressController } from './edit-address.controller'
 import { EditDeliveryManController } from './edit-delivery-man.controller'
 import { EditOrderController } from './edit-order.controller'
 import { EditRecipientController } from './edit-recipient.controller'
@@ -67,6 +73,9 @@ import { SaveOrderAttachmentController } from './save-order-attachment.controlle
     FetchOrdersByDeliveryManController,
     ChangePasswordController,
     ReadNotificationController,
+    CreateAddressController,
+    EditAddressController,
+    DeleteAddressController,
   ],
   providers: [
     AuthenticateUseCase,
@@ -89,6 +98,9 @@ import { SaveOrderAttachmentController } from './save-order-attachment.controlle
     FetchOrdersByDeliveryManUseCase,
     ChangePasswordUseCase,
     ReadNotificationUseCase,
+    CreateAddressUseCase,
+    EditAddressUseCase,
+    DeleteAddressUseCase,
   ],
   exports: [
     AuthenticateUseCase,
@@ -111,6 +123,9 @@ import { SaveOrderAttachmentController } from './save-order-attachment.controlle
     FetchOrdersByDeliveryManUseCase,
     ChangePasswordUseCase,
     ReadNotificationUseCase,
+    CreateAddressUseCase,
+    EditAddressUseCase,
+    DeleteAddressUseCase,
   ],
 })
 export class HttpModule {}

@@ -12,8 +12,8 @@ import { Order } from '@/domain/orders-control/enterprise/entities/order'
 import { OrderWithDetails } from '@/domain/orders-control/enterprise/entities/value-objects/order-with-details'
 
 export type PrismaOrdersWithDetailsMapperParams = PrismaOrder & {
-  deliveryMen: PrismaDeliveryMan
-  recipients: PrismaRecipient
+  deliveryMan: PrismaDeliveryMan
+  recipient: PrismaRecipient
 }
 
 export class PrismaOrdersMapper {
@@ -44,12 +44,12 @@ export class PrismaOrdersMapper {
     return OrderWithDetails.create({
       orderId: new UniqueEntityId(raw.id),
       recipient: {
-        id: new UniqueEntityId(raw.recipients.id),
-        name: raw.recipients.name,
+        id: new UniqueEntityId(raw.recipient.id),
+        name: raw.recipient.name,
       },
       deliveryMan: {
-        id: new UniqueEntityId(raw.deliveryMen.id),
-        name: raw.deliveryMen.name,
+        id: new UniqueEntityId(raw.deliveryMan.id),
+        name: raw.deliveryMan.name,
       },
       coordinates: raw.coordinates as unknown as LatLng,
       status: raw.status,

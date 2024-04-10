@@ -8,6 +8,8 @@ import { Recipient } from '../../enterprise/entities/recipient'
 import { HashCreator } from '../hash/hash-creator'
 import { AdressesRepository } from '../repositories/address'
 import { RecipientsRepository } from '../repositories/recipient'
+import { InvalidAddressAmountPerRecipientError } from './errors/invalid-address-amount-per-recipient'
+import { RecipientWithNoOneAddressError } from './errors/recipient-with-no-one-address'
 import { UserWithSameCellphoneError } from './errors/user-with-same-cellphone'
 import { UserWithSameEmailError } from './errors/user-with-same-email'
 import { UserWithSameIndividualRegistrationError } from './errors/user-with-same-individual-registration'
@@ -28,6 +30,8 @@ type CreateRecipientUseCaseResponse = Either<
   | UserWithSameEmailError
   | UserWithSameIndividualRegistrationError
   | UserWithSameCellphoneError
+  | InvalidAddressAmountPerRecipientError
+  | RecipientWithNoOneAddressError
 >
 @Injectable()
 export class CreateRecipientUseCase {
@@ -75,6 +79,14 @@ export class CreateRecipientUseCase {
           'Already exists an user with same cellphone.',
         ),
       )
+    }
+
+    if (adresses.length === 0) {
+      return left(new RecipientWithNoOneAddressError())
+    }
+
+    if (adresses.length > 10) {
+      return left(new InvalidAddressAmountPerRecipientError())
     }
 
     const passwordHashed = await this.hashCreator.create(password)

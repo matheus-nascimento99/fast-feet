@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common'
 
 import { NotificationsRepository } from '@/domain/notification/application/repositories/notifications-repository'
+import { AdressesRepository } from '@/domain/orders-control/application/repositories/address'
 import { AdminsRepository } from '@/domain/orders-control/application/repositories/admin'
 import { DeliveryMenRepository } from '@/domain/orders-control/application/repositories/delivery-man'
 import { OrdersRepository } from '@/domain/orders-control/application/repositories/order'
 import { RecipientsRepository } from '@/domain/orders-control/application/repositories/recipient'
 
 import { PrismaService } from './prisma/prisma.service'
+import { PrismaAdressesRepository } from './prisma/repositories/address'
 import { PrismaAdminsRepository } from './prisma/repositories/admin'
 import { PrismaDeliveryMenRepository } from './prisma/repositories/delivery-man'
 import { PrismaNotificationsRepository } from './prisma/repositories/notification'
@@ -24,6 +26,7 @@ import { PrismaRecipientsRepository } from './prisma/repositories/recipient'
       provide: NotificationsRepository,
       useClass: PrismaNotificationsRepository,
     },
+    { provide: AdressesRepository, useClass: PrismaAdressesRepository },
   ],
   exports: [
     PrismaService,
@@ -32,6 +35,7 @@ import { PrismaRecipientsRepository } from './prisma/repositories/recipient'
     OrdersRepository,
     RecipientsRepository,
     NotificationsRepository,
+    AdressesRepository,
   ],
 })
 export class DatabaseModule {}

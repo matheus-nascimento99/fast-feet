@@ -10,6 +10,8 @@ import { AddressList } from '../../enterprise/entities/address-list'
 import { Mask } from '../../enterprise/entities/value-objects/mask'
 import { AdressesRepository } from '../repositories/address'
 import { RecipientsRepository } from '../repositories/recipient'
+import { InvalidAddressAmountPerRecipientError } from './errors/invalid-address-amount-per-recipient'
+import { RecipientWithNoOneAddressError } from './errors/recipient-with-no-one-address'
 import { UserWithSameCellphoneError } from './errors/user-with-same-cellphone'
 import { UserWithSameEmailError } from './errors/user-with-same-email'
 import { UserWithSameIndividualRegistrationError } from './errors/user-with-same-individual-registration'
@@ -23,7 +25,14 @@ interface EditRecipientUseCaseRequest {
   adresses: string[]
 }
 
-type EditRecipientUseCaseResponse = Either<unknown, ResourceNotFoundError>
+type EditRecipientUseCaseResponse = Either<
+  unknown,
+  | UserWithSameEmailError
+  | UserWithSameIndividualRegistrationError
+  | UserWithSameCellphoneError
+  | InvalidAddressAmountPerRecipientError
+  | RecipientWithNoOneAddressError
+>
 @Injectable()
 export class EditRecipientUseCase {
   constructor(
@@ -79,6 +88,14 @@ export class EditRecipientUseCase {
           'Already exists an user with same cellphone.',
         ),
       )
+    }
+
+    if (adresses.length === 0) {
+      return left(new RecipientWithNoOneAddressError())
+    }
+
+    if (adresses.length > 10) {
+      return left(new InvalidAddressAmountPerRecipientError())
     }
 
     for (const [key, value] of Object.entries(rest) as [

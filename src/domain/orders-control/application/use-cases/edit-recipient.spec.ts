@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker'
 import { makeAddress } from 'test/factories/make-address'
 import { makeRecipient } from 'test/factories/make-recipient'
 import { InMemoryAdressesRepository } from 'test/repositories/in-memory-address'
@@ -8,6 +9,8 @@ import { UniqueEntityId } from '@/core/value-objects/unique-entity-id'
 
 import { AddressList } from '../../enterprise/entities/address-list'
 import { EditRecipientUseCase } from './edit-recipient'
+import { InvalidAddressAmountPerRecipientError } from './errors/invalid-address-amount-per-recipient'
+import { RecipientWithNoOneAddressError } from './errors/recipient-with-no-one-address'
 import { UserWithSameCellphoneError } from './errors/user-with-same-cellphone'
 import { UserWithSameEmailError } from './errors/user-with-same-email'
 import { UserWithSameIndividualRegistrationError } from './errors/user-with-same-individual-registration'
@@ -102,7 +105,7 @@ describe('Edit recipient use case', () => {
       individualRegistration: '123.456.789-10',
       email: 'example-email-updated@mail.com',
       cellphone: '+551198425-1086',
-      adresses: [],
+      adresses: [faker.string.uuid()],
     })
 
     expect(result.isLeft()).toEqual(true)
@@ -122,7 +125,7 @@ describe('Edit recipient use case', () => {
       individualRegistration: recipient2.individualRegistration.value,
       email: 'example-email-updated@mail.com',
       cellphone: '+551198425-1086',
-      adresses: [],
+      adresses: [faker.string.uuid()],
     })
 
     expect(result.value).toBeInstanceOf(UserWithSameIndividualRegistrationError)
@@ -141,7 +144,7 @@ describe('Edit recipient use case', () => {
       individualRegistration: '456.143.238.80',
       email: 'example-email-updated@mail.com',
       cellphone: recipient2.cellphone.value,
-      adresses: [],
+      adresses: [faker.string.uuid()],
     })
 
     expect(result.value).toBeInstanceOf(UserWithSameCellphoneError)
@@ -160,9 +163,47 @@ describe('Edit recipient use case', () => {
       individualRegistration: '456.143.238.80',
       email: recipient2.email,
       cellphone: '+551195119-5312',
-      adresses: [],
+      adresses: [faker.string.uuid()],
     })
 
     expect(result.value).toBeInstanceOf(UserWithSameEmailError)
+  })
+
+  it('should not be able to edit a recipient with no one address', async () => {
+    const recipient = makeRecipient()
+    await inMemoryRecipientsRepository.create(recipient)
+
+    const result = await sut.execute({
+      recipientId: recipient.id.toString(),
+      name: 'example-name-updated',
+      individualRegistration: '456.143.238.80',
+      email: 'mnsergio@mail.com',
+      cellphone: '+551195119-5312',
+      adresses: [],
+    })
+
+    expect(result.isLeft()).toEqual(true)
+    expect(result.value).toBeInstanceOf(RecipientWithNoOneAddressError)
+  })
+
+  it('should not be able to edit a recipient with more than ten adresses', async () => {
+    const adresses = Array.from({ length: 11 }).map(() => {
+      return faker.string.uuid()
+    })
+
+    const recipient = makeRecipient()
+    await inMemoryRecipientsRepository.create(recipient)
+
+    const result = await sut.execute({
+      recipientId: recipient.id.toString(),
+      name: 'example-name-updated',
+      individualRegistration: '456.143.238.80',
+      email: 'mnsergio@mail.com',
+      cellphone: '+551195119-5312',
+      adresses,
+    })
+
+    expect(result.isLeft()).toEqual(true)
+    expect(result.value).toBeInstanceOf(InvalidAddressAmountPerRecipientError)
   })
 })
