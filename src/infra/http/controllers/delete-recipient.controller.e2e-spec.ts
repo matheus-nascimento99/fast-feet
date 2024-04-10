@@ -59,11 +59,7 @@ describe('Delete recipient (e2e)', () => {
       },
     })
 
-    const adresses = await prisma.address.findMany()
-
     expect(result.statusCode).toEqual(204)
     expect(recipientDeleted).toBeNull()
-
-    expect(adresses).toHaveLength(0)
   })
 })

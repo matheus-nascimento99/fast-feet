@@ -7,6 +7,7 @@ import { DeliveryMenRepository } from '@/domain/orders-control/application/repos
 import { OrdersRepository } from '@/domain/orders-control/application/repositories/order'
 import { RecipientsRepository } from '@/domain/orders-control/application/repositories/recipient'
 
+import { CacheModule } from '../cache/cache.module'
 import { PrismaService } from './prisma/prisma.service'
 import { PrismaAdressesRepository } from './prisma/repositories/address'
 import { PrismaAdminsRepository } from './prisma/repositories/admin'
@@ -16,6 +17,7 @@ import { PrismaOrdersRepository } from './prisma/repositories/order'
 import { PrismaRecipientsRepository } from './prisma/repositories/recipient'
 
 @Module({
+  imports: [CacheModule],
   providers: [
     PrismaService,
     { provide: AdminsRepository, useClass: PrismaAdminsRepository },

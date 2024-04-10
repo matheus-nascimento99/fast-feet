@@ -8,12 +8,16 @@ import { UniqueEntityId } from '@/core/value-objects/unique-entity-id'
 import { OrdersRepository } from '@/domain/orders-control/application/repositories/order'
 import { Order } from '@/domain/orders-control/enterprise/entities/order'
 import { OrderWithDetails } from '@/domain/orders-control/enterprise/entities/value-objects/order-with-details'
+import { Cacher } from '@/infra/cache/cacher'
 
 import { PrismaOrdersMapper } from '../../mappers/orders-mapper'
 import { PrismaService } from '../prisma.service'
 @Injectable()
 export class PrismaOrdersRepository implements OrdersRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private cache: Cacher,
+  ) {}
 
   async create(order: Order): Promise<void> {
     const data = PrismaOrdersMapper.toPrisma(order)
@@ -21,6 +25,8 @@ export class PrismaOrdersRepository implements OrdersRepository {
     await this.prisma.order.create({
       data,
     })
+
+    await this.cache.del('fast-feet:orders')
   }
 
   async findById(orderId: string): Promise<Order | null> {
@@ -38,12 +44,23 @@ export class PrismaOrdersRepository implements OrdersRepository {
   }
 
   async findMany({ limit, page }: PaginationParams): Promise<Order[]> {
-    const orders = await this.prisma.order.findMany({
+    const cacheHit = await this.cache.get('fast-feet:orders')
+
+    if (cacheHit) {
+      const orders: PrismaOrder[] = JSON.parse(cacheHit)
+      return orders.map((order) => PrismaOrdersMapper.toDomain(order))
+    }
+
+    const result = await this.prisma.order.findMany({
       take: limit,
       skip: (page - 1) * limit,
     })
 
-    return orders.map((order) => PrismaOrdersMapper.toDomain(order))
+    const orders = result.map((order) => PrismaOrdersMapper.toDomain(order))
+
+    await this.cache.set('fast-feet:orders', JSON.stringify(orders))
+
+    return orders
   }
 
   async findManyNearByDeliveryMan(

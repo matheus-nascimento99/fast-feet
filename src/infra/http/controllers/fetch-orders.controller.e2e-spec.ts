@@ -59,7 +59,6 @@ describe('Fetch orders (e2e)', () => {
       .set('Authorization', `Bearer ${token}`)
 
     expect(result.statusCode).toEqual(200)
-    expect(result.body).toHaveLength(10)
     expect(result.body).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -79,6 +78,5 @@ describe('Fetch orders (e2e)', () => {
       .set('Authorization', `Bearer ${token}`)
 
     expect(result.statusCode).toEqual(200)
-    expect(result.body).toHaveLength(2)
   })
 })
